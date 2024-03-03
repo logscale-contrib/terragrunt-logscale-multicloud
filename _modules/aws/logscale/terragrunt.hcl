@@ -69,8 +69,8 @@ inputs = {
   saml_signing_certificate = dependency.sso.outputs.signing_certificate
   saml_issuer              = dependency.sso.outputs.issuer
 
-  LogScaleRoot    = try(local.tenant.logscale.root, "akaadmin")
-  kafka_name      = local.kafka_name
-  kafka_namespace = local.kafka_namespace
-  kafka_prefix_increment = try(local.tenant.logscale.kafka.prefixIncrement,"0")
+  LogScaleRoot           = try(local.tenant.logscale.root, "akaadmin")
+  kafka_name             = local.kafka_name
+  kafka_namespace        = local.kafka_namespace
+  kafka_prefix_increment = try(local.tenant.logscale.kafka.prefixIncrement, "0")
 }
