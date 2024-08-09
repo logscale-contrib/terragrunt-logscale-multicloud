@@ -1,13 +1,13 @@
 module "AWSLogs" {
   source  = "terraform-aws-modules/sns/aws"
-  version = "6.0.1"
+  version = "6.1.0"
 
   name = "${var.partition_name}-log-bucket-AWSLogs"
   use_name_prefix = true
 }
 module "S3Logs" {
   source  = "terraform-aws-modules/sns/aws"
-  version = "6.0.1"
+  version = "6.1.0"
 
   name = "${var.partition_name}-log-bucket-S3Logs"
   use_name_prefix = true
