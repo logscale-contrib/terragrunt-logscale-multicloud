@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: kafka-strimzi-cluster
-      version: "4.3.9"
+      version: "4.5.1"
       sourceRef:
         kind: HelmRepository
         name: logscale-contrib
@@ -37,11 +37,11 @@ spec:
           # resources, such as Minikube. If you do want to specify resources, uncomment the following
           # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
           limits:
-            cpu: 1
-            memory: 2000Mi
+            cpu: 4
+            memory: 12Gi
           requests:
-            cpu: 100m
-            memory: 1500Mi
+            cpu: 1
+            memory: 12Gi
         template:
           pod:
             affinity:
@@ -200,6 +200,33 @@ spec:
         # targetMemoryUtilizationPercentage: 80
 
     kafka:
+      config:
+        num.recovery.threads.per.data.dir: 4
+        min.insync.replicas: 4
+        default.replication.factor: 3
+        offsets.topic.replication.factor: 3
+        transaction.state.log.min.isr: 2
+        transaction.state.log.replication.factor: 3
+        # For storage where storage is thin provisioned enable
+        log.preallocate: true
+        # background threads include replication for very high throughput increase based on available CPU cores and usage default is 10
+        background.threads: 20
+        # num.io.threads increase based on available CPU cores and usage default is 8
+        num.io.threads: 20
+        # num.network.threads increase based on available CPU cores and usage default is 3
+        num.network.threads: 6
+        # num.replica.fetchers increase based on available CPU cores and usage default is 1
+        # num.replica.fetchers: 10
+
+        # replica.socket.receive.buffer.bytes: 65536 increased for higher replication throughput based on memory
+        # replica.socket.receive.buffer.bytes: 1000000
+
+        # socket.receive.buffer.bytes: 102400 default setting to -1 to use OS default
+        socket.receive.buffer.bytes: -1
+        # socket.request.max.bytes: 104857600 default setting to 100MB probably should not change
+        # socket.send.buffer.bytes: 102400 default setting to -1 to use OS default
+        socket.send.buffer.bytes: -1
+
       authorization:
         enabled: true
       listeners:
