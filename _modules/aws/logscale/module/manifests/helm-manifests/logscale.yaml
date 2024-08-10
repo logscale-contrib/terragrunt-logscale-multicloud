@@ -39,7 +39,7 @@ spec:
 
     humio:
       image:
-        tag: 1.137.0
+        tag: 1.150.0
       trustManagerConfigMap: cluster-trust-bundle
       extraENV:
         - name: HUMIO_JVM_PERFORMANCE_OPTS
@@ -63,6 +63,18 @@ spec:
         bootstrap: ${kafka_name}-kafka-bootstrap.${kafka_namespace}.svc:9093
         topicPrefix: ${tenant}-logscale-${kafka_prefix}
         extraConfig: |
+          # receive.buffer.bytes=65536 is the default use -1 to set to OS max
+          receive.buffer.bytes=-1
+          # send.buffer.bytes=131072 is the default use -1 to set to OS max
+          send.buffer.bytes=-1
+
+          # Additional external kafka configuration
+          # max.partition.fetch.bytes=1048576 is the default value 3 MB should be optimal for logscale
+          max.partition.fetch.bytes=3145728
+          # linger.ms with high partition counts and sharding this small delay allows for optimal batch sizing
+          # under high loads it will have no effect
+          linger.ms=5
+
           config.providers=env
           config.providers.env.class=org.apache.kafka.common.config.provider.EnvVarConfigProvider
           ssl.truststore.location=/data/truststore/bundle.jks
@@ -147,7 +159,7 @@ spec:
             storage: "468Gi"
         # storageClassName: "gp3"
         # storageClassName: "cluster-block-base-ext4"
-        storageClassName: "instancestore-nvme-ext4"
+        storageClassName: "instancestore-nvme-ext4-ro"
 
       frontEndDataVolumePersistentVolumeClaimSpecTemplate:
         accessModes: ["ReadWriteOnce"]
