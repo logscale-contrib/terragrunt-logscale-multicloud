@@ -3,3 +3,5 @@ platform: aws
 region: us-west-2
 logscale:
   root: john.vonrader@crowdstrike.com
+  kafka:
+    prefixIncrement: 2

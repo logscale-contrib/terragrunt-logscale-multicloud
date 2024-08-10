@@ -159,7 +159,7 @@ spec:
             storage: "468Gi"
         # storageClassName: "gp3"
         # storageClassName: "cluster-block-base-ext4"
-        storageClassName: "instancestore-nvme-ext4-ro"
+        storageClassName: "instancestore-nvme-ext4"
 
       frontEndDataVolumePersistentVolumeClaimSpecTemplate:
         accessModes: ["ReadWriteOnce"]

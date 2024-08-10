@@ -3,3 +3,5 @@ platform: aws
 region: us-west-2
 logscale:
   root: brandon.mesa@crowdstrike.com
+  kafka:
+    prefixIncrement: 2

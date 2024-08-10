@@ -1,5 +1,7 @@
-name: dodo
+name: cassowary
 platform: aws
 region: us-west-2
 logscale:
   root: matt.smith1@crowdstrike.com
+  kafka:
+    prefixIncrement: 2

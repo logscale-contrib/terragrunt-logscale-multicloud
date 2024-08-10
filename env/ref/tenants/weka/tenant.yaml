@@ -4,4 +4,4 @@ region: us-east-1
 logscale:
   root: ryan.faircloth@crowdstrike.com
   kafka:
-    prefixIncrement: 2
+    prefixIncrement: 4

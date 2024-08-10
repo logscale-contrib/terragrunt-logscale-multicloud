@@ -3,3 +3,5 @@ platform: aws
 region: us-west-2
 logscale:
   root: mohamad.nabulsi@crowdstrike.com
+  kafka:
+    prefixIncrement: 2
