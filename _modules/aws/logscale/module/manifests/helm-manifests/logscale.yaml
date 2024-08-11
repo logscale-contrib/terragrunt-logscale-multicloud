@@ -1,3 +1,4 @@
+---
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -9,7 +10,7 @@ spec:
   chart:
     spec:
       chart: logscale
-      version: "7.0.0-next.130"
+      version: 7.0.0-next.130
       sourceRef:
         kind: HelmRepository
         name: logscale-contrib-ls
@@ -22,21 +23,19 @@ spec:
       retries: 3
   upgrade:
     disableWaitForJobs: true
-    # remediation:
-    #   retries: 3
   test:
     enable: false
   driftDetection:
     mode: warn
     ignore:
-      - paths: ["/spec/replicas"]
+      - paths:
+          - /spec/replicas
         target:
           kind: Deployment
   values:
     platform:
       provider: aws
     fullnameOverride: logscale
-
     humio:
       image:
         tag: 1.150.0
@@ -45,7 +44,7 @@ spec:
         - name: HUMIO_JVM_PERFORMANCE_OPTS
           value: -XX:+UseNUMA -XX:+UseTransparentHugePages
         - name: INGEST_FEED_AWS_ROLE_ARN
-          value: "${ingest_role_arn}"
+          value: ${ingest_role_arn}
         - name: HUMIO_MAX_DIRECT_MEMORY_SIZE_MB
           value: "1024"
         - name: MAX_SERIES_LIMIT
@@ -62,24 +61,39 @@ spec:
         prefixEnable: true
         bootstrap: ${kafka_name}-kafka-bootstrap.${kafka_namespace}.svc:9093
         topicPrefix: ${tenant}-logscale-${kafka_prefix}
-        extraConfig: |
+        extraConfig: >
           # receive.buffer.bytes=65536 is the default use -1 to set to OS max
+
           receive.buffer.bytes=-1
+
           # send.buffer.bytes=131072 is the default use -1 to set to OS max
+
           send.buffer.bytes=-1
 
+
           # Additional external kafka configuration
+
           # max.partition.fetch.bytes=1048576 is the default value 3 MB should be optimal for logscale
+
           max.partition.fetch.bytes=3145728
+
           # linger.ms with high partition counts and sharding this small delay allows for optimal batch sizing
+
           # under high loads it will have no effect
+
           linger.ms=5
 
+
           config.providers=env
+
           config.providers.env.class=org.apache.kafka.common.config.provider.EnvVarConfigProvider
+
           ssl.truststore.location=/data/truststore/bundle.jks
+
           security.protocol=SASL_SSL
+
           sasl.mechanism=SCRAM-SHA-512
+
           sasl.jaas.config=$${env:KAFKA_JAAS}
       buckets:
         prefix: ${bucket_prefix}
@@ -103,9 +117,7 @@ spec:
           signOnUrl: ${saml_url}
           entityID: ${saml_issuer}
           idpCertificate: ${saml_signing_certificate}
-
       nodeCount: 2
-      #In general for these node requests and limits should match
       resources:
         requests:
           memory: 16Gi
@@ -118,13 +130,15 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: "kubernetes.io/arch"
-                    operator: "In"
-                    values: ["amd64"]
-                  - key: "kubernetes.io/os"
-                    operator: "In"
-                    values: ["linux"]
-                  - key: "karpenter.k8s.aws/instance-local-nvme"
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
+                  - key: karpenter.k8s.aws/instance-local-nvme
                     operator: Exists
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -133,10 +147,10 @@ spec:
                   - key: humio.com/node-pool
                     operator: In
                     values:
-                      - "logscale"
-                      - "logscale-ingest-only"
-                      - "logscale-http-only"
-              topologyKey: "kubernetes.io/hostname"
+                      - logscale
+                      - logscale-ingest-only
+                      - logscale-http-only
+              topologyKey: kubernetes.io/hostname
       topologySpreadConstraints:
         - maxSkew: 2
           minDomains: 2
@@ -150,25 +164,23 @@ spec:
                   - logscale
       tolerations:
         - key: topolvm.io/local
-          operator: "Equal"
+          operator: Equal
           value: "true"
       dataVolumePersistentVolumeClaimSpecTemplate:
-        accessModes: ["ReadWriteOnce"]
+        accessModes:
+          - ReadWriteOnce
         resources:
           requests:
-            storage: "468Gi"
-        # storageClassName: "gp3"
-        # storageClassName: "cluster-block-base-ext4"
-        storageClassName: "instancestore-nvme-ext4"
-
+            storage: 468Gi
+        storageClassName: instancestore-nvme-ext4
       frontEndDataVolumePersistentVolumeClaimSpecTemplate:
-        accessModes: ["ReadWriteOnce"]
+        accessModes:
+          - ReadWriteOnce
         resources:
           requests:
-            storage: "10Gi"
-        storageClassName: "cluster-block-base-ext4"
+            storage: 10Gi
+        storageClassName: cluster-block-base-ext4
       priorityClass: partition-high
-
       ingress:
         ui:
           className: alb-partition
@@ -184,7 +196,6 @@ spec:
           annotations:
             alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
             alb.ingress.kubernetes.io/ssl-redirect: "443"
-
       nodepools:
         ingest:
           priorityClass: partition-medium
@@ -201,13 +212,15 @@ spec:
               requiredDuringSchedulingIgnoredDuringExecution:
                 nodeSelectorTerms:
                   - matchExpressions:
-                      - key: "kubernetes.io/arch"
-                        operator: "In"
-                        values: ["amd64"]
-                      - key: "kubernetes.io/os"
-                        operator: "In"
-                        values: ["linux"]
-                      - key: "karpenter.k8s.aws/instance-local-nvme"
+                      - key: kubernetes.io/arch
+                        operator: In
+                        values:
+                          - amd64
+                      - key: kubernetes.io/os
+                        operator: In
+                        values:
+                          - linux
+                      - key: karpenter.k8s.aws/instance-local-nvme
                         operator: DoesNotExist
             podAntiAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -216,10 +229,10 @@ spec:
                       - key: humio.com/node-pool
                         operator: In
                         values:
-                          - "logscale"
-                          - "logscale-ingest-only"
-                          - "logscale-http-only"
-                  topologyKey: "kubernetes.io/hostname"
+                          - logscale
+                          - logscale-ingest-only
+                          - logscale-http-only
+                  topologyKey: kubernetes.io/hostname
           topologySpreadConstraints:
             - maxSkew: 2
               minDomains: 2
@@ -246,13 +259,15 @@ spec:
               requiredDuringSchedulingIgnoredDuringExecution:
                 nodeSelectorTerms:
                   - matchExpressions:
-                      - key: "kubernetes.io/arch"
-                        operator: "In"
-                        values: ["amd64"]
-                      - key: "kubernetes.io/os"
-                        operator: "In"
-                        values: ["linux"]
-                      - key: "karpenter.k8s.aws/instance-local-nvme"
+                      - key: kubernetes.io/arch
+                        operator: In
+                        values:
+                          - amd64
+                      - key: kubernetes.io/os
+                        operator: In
+                        values:
+                          - linux
+                      - key: karpenter.k8s.aws/instance-local-nvme
                         operator: DoesNotExist
             podAntiAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -261,10 +276,10 @@ spec:
                       - key: humio.com/node-pool
                         operator: In
                         values:
-                          - "logscale"
-                          - "logscale-ingest-only"
-                          - "logscale-http-only"
-                  topologyKey: "kubernetes.io/hostname"
+                          - logscale
+                          - logscale-ingest-only
+                          - logscale-http-only
+                  topologyKey: kubernetes.io/hostname
           topologySpreadConstraints:
             - maxSkew: 2
               minDomains: 2
@@ -275,4 +290,4 @@ spec:
                   - key: humio.com/node-pool
                     operator: In
                     values:
-                      - "logscale-http-only"
+                      - logscale-http-only
