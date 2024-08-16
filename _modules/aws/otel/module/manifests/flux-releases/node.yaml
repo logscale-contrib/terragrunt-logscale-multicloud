@@ -171,6 +171,7 @@ spec:
             receivers:
               - otlp
               - prometheus
+              - hostmetrics
         telemetry:
           logs:
             encoding: json
