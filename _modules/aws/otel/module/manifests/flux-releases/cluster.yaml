@@ -2,17 +2,17 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: otel-cluster
-  namespace: flux-releases-region
+  namespace: otel-system
 spec:
   interval: 10m
   timeout: 5m
   chart:
     spec:
-      chart: raw
-      version: "2.0.0"
+      chart: opentelemetry-collector
+      version: "0.101.2"
       sourceRef:
         kind: HelmRepository
-        name: bedag
+        name: otel
         namespace: flux-repos
       interval: 5m
   releaseName: otel-cluster
@@ -25,85 +25,97 @@ spec:
       retries: 3
   test:
     enable: false
-  dependsOn:
-    - name: otel-operator
-      namespace: flux-releases-region
   values:
-    templates:
-      - |
-        apiVersion: opentelemetry.io/v1alpha1
-        kind: OpenTelemetryCollector
-        metadata:
-          name: otel-cluster-events
-        spec:
-          serviceAccount: otel-collector-cluster
-          # image: otel/opentelemetry-collector-contrib:0.56.0
-          mode: deployment
-          env:
-            - name: K8S_NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-            - name: HUMIO_TOKEN_K8S_LOGS
-              valueFrom:
-                secretKeyRef:
-                  name: infra-kubernetes-ingest-token
-                  key: token
-            - name: HUMIO_TOKEN_K8S_METRICS
-              valueFrom:
-                secretKeyRef:
-                  name: metrics-kubernetes-ingest-token
-                  key: token
-          config: |
-            exporters:
-              otlphttp/k8s_logs:
-                endpoint: https://${fqdn_ingest}/api/v1/ingest/otlp
-                headers:
-                  Authorization: Bearer $HUMIO_TOKEN_K8S_LOGS
-              otlphttp/k8s_metrics:
-                endpoint: https://${fqdn_ingest}/api/v1/ingest/otlp
-                headers:
-                  Authorization: Bearer $HUMIO_TOKEN_K8S_METRICS
-            receivers:
-              k8s_events:
-              k8s_cluster:
-                node_conditions_to_report:
-                  [Ready, DiskPressure, MemoryPressure, PIDPressure, NetworkUnavailable]
-                allocatable_types_to_report: [cpu, memory]
-              k8sobjects:
-                auth_type: serviceAccount
-                objects:
-                  - name: pods
-                    mode: pull
-                    field_selector: status.phase=Running
-                    interval: 15m
-                  - name: events
-                    mode: watch
-                    group: events.k8s.io
-            processors:
-              memory_limiter:
-                check_interval: 1s
-                limit_percentage: 75
-                spike_limit_percentage: 15
-              batch:
-                send_batch_size: 1000
-                timeout: 5s
-            extensions:
-              health_check:
-                endpoint: 0.0.0.0:13133
-              pprof:
-                endpoint: :1888
-              zpages:
-                endpoint: :55679
+    mode: deployment
 
-            service:
-              extensions: [pprof, zpages, health_check]
-              pipelines:
-                metrics:
-                  receivers: [k8s_cluster]
-                  processors: [batch]
-                  exporters: [otlphttp/k8s_metrics]
-                logs:
-                  receivers: [k8s_events,k8sobjects,k8s_cluster]
-                  processors: [batch]
-                  exporters: [otlphttp/k8s_logs]
+    image:
+      repository: "otel/opentelemetry-collector-k8s"
+
+    command:
+      name: "otelcol-k8s"
+    extraEnvs:
+      - name: K8S_NODE_NAME
+        valueFrom:
+          fieldRef:
+            fieldPath: spec.nodeName
+
+    serviceAccount:
+      create: true
+    clusterRole:
+      create: true
+    service:
+      enabled: false
+    presets:
+
+      # Configures the collector to collect kubernetes events.
+      # Adds the k8sobject receiver to the logs pipeline
+      # and collects kubernetes events by default.
+      # Best used with mode = deployment or statefulset.
+      # See https://opentelemetry.io/docs/kubernetes/collector/components/#kubernetes-objects-receiver for details on the receiver.
+      kubernetesEvents:
+        enabled: true
+      # Configures the Kubernetes Cluster Receiver to collect cluster-level metrics.
+      # Adds the k8s_cluster receiver to the metrics pipeline
+      # and adds the necessary rules to ClusteRole.
+      # Best used with mode = deployment or statefulset.
+      # See https://opentelemetry.io/docs/kubernetes/collector/components/#kubernetes-cluster-receiver for details on the receiver.
+      clusterMetrics:
+        enabled: true
+    config:
+      extensions:
+        health_check:
+          endpoint: "[$${env:MY_POD_IP}]:13133"
+      processors:
+        memory_limiter:
+          check_interval: 5s
+          limit_percentage: 80
+          spike_limit_percentage: 25
+      receivers:
+        jaeger:
+          protocols:
+            grpc:
+              endpoint: "[$${env:MY_POD_IP}]:14250"
+            thrift_http:
+              endpoint: "[$${env:MY_POD_IP}]:14268"
+            thrift_compact:
+              endpoint: "[$${env:MY_POD_IP}]:6831"
+        otlp:
+          protocols:
+            grpc:
+              endpoint: "[$${env:MY_POD_IP}]:4317"
+            http:
+              endpoint: "[$${env:MY_POD_IP}]:4318"
+        prometheus:
+          config:
+            scrape_configs:
+              - job_name: opentelemetry-collector
+                scrape_interval: 10s
+                static_configs:
+                  - targets:
+                      - "[$${env:MY_POD_IP}]:8888"
+        zipkin:
+          endpoint: "[$${env:MY_POD_IP}]:9411"
+      exporters:
+        otlphttp:
+          endpoint: http://otel-node-opentelemetry-collector:4318
+      service:
+        pipelines:
+          logs:
+            receivers:
+              - k8sobjects
+            processors:
+              - batch
+            exporters:
+              - otlphttp
+          metrics:
+            exporters:
+              - otlphttp
+            processors:
+              - batch
+            receivers:
+              - k8s_cluster
+        telemetry:
+          logs:
+            encoding: json
+          metrics:
+            address: "[$${env:MY_POD_IP}]:8888"

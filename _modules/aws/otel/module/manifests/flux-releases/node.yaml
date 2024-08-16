@@ -25,9 +25,6 @@ spec:
       retries: 3
   test:
     enable: false
-  dependsOn:
-    - name: otel-operator
-      namespace: flux-releases-region
   values:
     mode: daemonset
 
@@ -156,6 +153,7 @@ spec:
           logs:
             receivers:
               - filelog
+              - otlp
             processors:
               - k8sattributes
               - batch

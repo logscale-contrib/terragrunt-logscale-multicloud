@@ -56,18 +56,26 @@ spec:
           name: "otel-humio"
           parserScript: |
             parseJson()
-            | parseTimestamp(field="scopeLog.logRecord.attributes.time")
             | case {
-              scopeLog.logRecord.body=* AND scopeLog.logRecord.body=/^{.*}$/
-                | parseJson(field=scopeLog.logRecord.body,prefix="scopeLog.logRecord.body.",handleNull=discard)
+              scopeLog.logRecord.attributes.k8s.resource.name="events"
+              | %type:=events
+              | parseTimestamp(field="scopeLog.logRecord.observedTimeUnix.millis",format=millis,addErrors=false)
+              ;
+              *
+                | parseTimestamp(field="scopeLog.logRecord.attributes.time")
                 | case {
-                  "scopeLog.logRecord.body.message"=* | rename(field=scopeLog.logRecord.body.message,as=@rawstring);
-                  "scopeLog.logRecord.body.msg"=* | rename(field=scopeLog.logRecord.body.msg,as=@rawstring);
-                  rename(field=scopeLog.logRecord.body,as=@rawstring);
+                  scopeLog.logRecord.body=* AND scopeLog.logRecord.body=/^{.*}$/
+                    | parseJson(field=scopeLog.logRecord.body,prefix="scopeLog.logRecord.body.",handleNull=discard)
+                    | case {
+                      "scopeLog.logRecord.body.message"=* | rename(field=scopeLog.logRecord.body.message,as=@rawstring);
+                      "scopeLog.logRecord.body.msg"=* | rename(field=scopeLog.logRecord.body.msg,as=@rawstring);
+                      rename(field=scopeLog.logRecord.body,as=@rawstring);
+                    }
+                    ;
+                  scopeLog.logRecord.body=* | rename(field=scopeLog.logRecord.body,as=@rawstring);
+                  *;
                 }
-                ;
-              scopeLog.logRecord.body=* | rename(field=scopeLog.logRecord.body,as=@rawstring);
-              *;
+            ;
             }
 
             | case {
