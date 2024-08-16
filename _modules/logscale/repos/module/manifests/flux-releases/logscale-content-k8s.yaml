@@ -48,6 +48,57 @@ spec:
             timeInDays: 30
       - |
         apiVersion: core.humio.com/v1alpha1
+        kind: HumioParser
+        metadata:
+          name: otel-humio
+        spec:
+          managedClusterName: ${cluster_name}
+          name: "otel-humio"
+          parserScript: |
+            parseJson()
+            | parseTimestamp(field="scopeLog.logRecord.attributes.time")
+            | case {
+              scopeLog.logRecord.body=* AND scopeLog.logRecord.body=/^{.*}$/
+                | parseJson(field=scopeLog.logRecord.body,prefix="scopeLog.logRecord.body.",handleNull=discard)
+                | case {
+                  "scopeLog.logRecord.body.message"=* | rename(field=scopeLog.logRecord.body.message,as=@rawstring);
+                  "scopeLog.logRecord.body.msg"=* | rename(field=scopeLog.logRecord.body.msg,as=@rawstring);
+                  rename(field=scopeLog.logRecord.body,as=@rawstring);
+                }
+                ;
+              scopeLog.logRecord.body=* | rename(field=scopeLog.logRecord.body,as=@rawstring);
+              *;
+            }
+
+            | case {
+              "resource.attributes.app.kubernetes.io/managed-by"="humio-operator" AND "resource.attributes.app.kubernetes.io/name"="humio"
+                | parseTimestamp(field="scopeLog.logRecord.body.@timestamp",format=millis,addErrors=false)
+                | rename(field=[
+                  [scopeLog.logRecord.body.vhost,%vhost],
+                  [scopeLog.logRecord.body.kind,%kind],
+                  [scopeLog.logRecord.body.class,class],
+                  [scopeLog.logRecord.body.loglevel,loglevel],
+                  [scopeLog.logRecord.body.thread,thread],
+                  [scopeLog.logRecord.body.message,@rawstring]
+                ])
+                | drop(fields=[scopeLog.logRecord.body,"scopeLog.logRecord.body.@timestamp"])
+                | %type :="humio"
+                | kvParse(excludeEmpty=true,)
+                ;
+              "resource.attributes.app.kubernetes.io/managed-by"="Helm" AND "resource.attributes.app.kubernetes.io/name"="humio-operator"
+                | %type :="humio-operator"
+                ;
+              *;
+
+            }
+          repositoryName: "infra-kubernetes"
+          tagFields:
+          - "%vhost"
+          - "%type"
+          - "%kind"
+          - "resource.attributes.k8s.namespace.name"
+      - |
+        apiVersion: core.humio.com/v1alpha1
         kind: HumioRepository
         metadata:
           name: apps-kubernetes

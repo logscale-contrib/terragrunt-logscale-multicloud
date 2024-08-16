@@ -14,6 +14,7 @@ resource "kubectl_manifest" "infra-token" {
       name: ${var.cluster_name}-infra-kubernetes
       repositoryName: infra-kubernetes
       tokenSecretName: ${var.cluster_name}-infra-kubernetes-ingest-token
+      parserName: otel-humio
 YAML
 }
 
