@@ -67,6 +67,8 @@ spec:
       kubernetesAttributes:
         enabled: true
         extractAllPodLabels: true
+      hostMetrics:
+        enabled: true
     config:
       receivers:
         jaeger:
@@ -159,6 +161,16 @@ spec:
               - batch
             exporters:
               - otlphttp/k8s_logs
+          metrics:
+            exporters:
+              - otlphttp/k8s_metrics
+            processors:
+              - k8sattributes
+              - memory_limiter
+              - batch
+            receivers:
+              - otlp
+              - prometheus
         telemetry:
           logs:
             encoding: json
