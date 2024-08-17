@@ -18,3 +18,13 @@ variable "logscale_fqdn_ingest" {
   type        = string
   description = "(optional) describe your variable"
 }
+
+variable "otel_arn" {
+  type        = string
+  description = "(optional) describe your variable"
+}
+
+variable "otel_cloud_platform" {
+  type        = string
+  description = "(optional) describe your variable"
+}

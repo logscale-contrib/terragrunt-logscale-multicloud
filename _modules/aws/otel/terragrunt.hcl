@@ -48,4 +48,7 @@ inputs = {
   namespace            = dependency.logscale.outputs.namespace
   logscale_fqdn        = dependency.logscale.outputs.logscale_fqdn
   logscale_fqdn_ingest = dependency.logscale.outputs.logscale_fqdn_ingest
+
+  otel_arn = dependency.kubernetes_base.outputs.otel_iam_role_arn
+  otel_cloud_platform = dependency.kubernetes_base.outputs.otel_cloud_platform
 }

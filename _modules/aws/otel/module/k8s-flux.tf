@@ -20,8 +20,7 @@ resource "kubectl_manifest" "flux2-releases" {
   depends_on = [
     kubectl_manifest.flux2-repos,
     kubernetes_secret.apps-kubernetes-ingest-token,
-    kubernetes_secret.infra-kubernetes-ingest-token,
-    kubectl_manifest.sa-clusterrolebinding
+    kubernetes_secret.infra-kubernetes-ingest-token
   ]
   for_each  = data.kubectl_path_documents.flux2-releases.manifests
   yaml_body = each.value

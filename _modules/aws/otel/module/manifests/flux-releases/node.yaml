@@ -50,10 +50,39 @@ spec:
             key: token
       - name: HUMIO_INGEST_HOST
         value: logscale-ingest.partition.ref.logsr.life
+      - name: HOST_PROC
+        value: /hostfs/proc
+      - name: HOST_SYS
+        value: /hostfs/sys
+      - name: HOST_ETC
+        value: /hostfs/etc
+      - name: HOST_VAR
+        value: /hostfs/var
+      - name: HOST_RUN
+        value: /hostfs/run
+      - name: HOST_DEV
+        value: /hostfs/dev
+      - name: HOST_ROOT
+        value: /hostfs
+    # This also supports template content, which will eventually be converted to yaml.
+    # extraVolumes:
+    #   - hostPath:
+    #       path: /proc
+    #       type: ""
+    #     name: hostproc
+    # # This also supports template content, which will eventually be converted to yaml.
+    # extraVolumeMounts: []
     serviceAccount:
       create: true
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::042445652404:role/otel-sa20240817134336470800000002
     clusterRole:
       create: true
+    rollout:
+      rollingUpdate:
+        # When 'mode: daemonset', maxSurge cannot be used when hostPort is set for any of the ports
+        # maxSurge: 25%
+        maxUnavailable: 50%
     service:
       enabled: true
     presets:
@@ -135,11 +164,63 @@ spec:
                   name: k8s.pod.uid
             - sources:
                 - from: connection
+        resourcedetection/env:
+          detectors: [env]
+          timeout: 2s
+          override: false
+        resourcedetection/system:
+          detectors: [system]
+          timeout: 2s
+          override: false
+          system:
+            hostname_sources: ["os"]
+            resource_attributes:
+              host.arch:
+                enabled: true
+              host.id:
+                enabled: true
+              host.name:
+                enabled: false
+              host.cpu.vendor.id:
+                enabled: true
+              host.cpu.family:
+                enabled: true
+              host.cpu.model.id:
+                enabled: true
+              host.cpu.model.name:
+                enabled: true
+              os.description:
+                enabled: true
+              os.type:
+                enabled: true
+        resourcedetection/cloud:
+          detectors: [ec2]
+          timeout: 15s
+          override: false
+          ec2:
+            # A list of regex's to match tag keys to add as resource attributes can be specified
+            tags:
+              - ^.
+            resource_attributes:
+              host.name:
+                enabled: true
+              host.id:
+                enabled: true
+        resourcedetection/k8s:
+          detectors: [k8snode, eks]
+          timeout: 15s
+          override: false
+          eks:
+            resource_attributes:
+              k8s.cluster.name:
+                enabled: true
+
         memory_limiter:
           check_interval: 5s
           limit_percentage: 80
           spike_limit_percentage: 25
       exporters:
+        debug:
         otlphttp/k8s_logs:
           endpoint: https://logscale-ingest.partition.ref.logsr.life/api/v1/ingest/otlp
           headers:
@@ -155,15 +236,19 @@ spec:
               - filelog
               - otlp
             processors:
+              - resourcedetection/system
+              - resourcedetection/env
+              - resourcedetection/k8s
+              - resourcedetection/cloud
               - k8sattributes
               - batch
             exporters:
               - otlphttp/k8s_logs
+              - debug
           metrics:
             exporters:
               - otlphttp/k8s_metrics
             processors:
-              - k8sattributes
               - memory_limiter
               - batch
             receivers:
