@@ -104,6 +104,9 @@ spec:
           - "%vhost"
           - "%type"
           - "%kind"
+          - "resource.attributes.cloud.platform"
+          - "resource.attributes.cloud.provider"
+          - "resource.attributes.cloud.region"
           - "resource.attributes.k8s.namespace.name"
       - |
         apiVersion: core.humio.com/v1alpha1

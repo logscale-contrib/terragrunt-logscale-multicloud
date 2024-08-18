@@ -64,14 +64,6 @@ spec:
         value: /hostfs/dev
       - name: HOST_ROOT
         value: /hostfs
-    # This also supports template content, which will eventually be converted to yaml.
-    # extraVolumes:
-    #   - hostPath:
-    #       path: /proc
-    #       type: ""
-    #     name: hostproc
-    # # This also supports template content, which will eventually be converted to yaml.
-    # extraVolumeMounts: []
     serviceAccount:
       create: true
       annotations:
@@ -135,6 +127,13 @@ spec:
             enabled: true
           start_at: end
       extensions:
+        file_storage:
+          directory: /var/lib/otelcol
+          compaction:
+            on_start: true
+            on_rebound: true
+            directory: /tmp/
+            max_transaction_size: 65_536
         health_check:
           endpoint: "[$${env:MY_POD_IP}]:13133"
       processors:
