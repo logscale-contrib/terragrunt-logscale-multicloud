@@ -37,8 +37,7 @@ YAML
 
 
 resource "kubectl_manifest" "metrics-token" {
-  provider = kubectl.partition
-
+  provider  = kubectl.partition
   yaml_body = <<-YAML
     apiVersion: core.humio.com/v1alpha1
     kind: HumioIngestToken
@@ -55,8 +54,8 @@ YAML
 
 resource "time_sleep" "tokencreation" {
   depends_on = [
-    kubectl_manifest.infra-token,
     kubectl_manifest.apps-token,
+    kubectl_manifest.infra-token,
     kubectl_manifest.metrics-token
   ]
   triggers = {

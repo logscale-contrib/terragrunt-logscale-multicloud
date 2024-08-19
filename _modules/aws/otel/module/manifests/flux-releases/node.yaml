@@ -25,6 +25,8 @@ spec:
       retries: 3
   test:
     enable: false
+  driftDetection:
+    mode: enabled
   values:
     mode: daemonset
 
@@ -127,13 +129,6 @@ spec:
             enabled: true
           start_at: end
       extensions:
-        file_storage:
-          directory: /var/lib/otelcol
-          compaction:
-            on_start: true
-            on_rebound: true
-            directory: /tmp/
-            max_transaction_size: 65_536
         health_check:
           endpoint: "[$${env:MY_POD_IP}]:13133"
       processors:
@@ -219,7 +214,6 @@ spec:
           limit_percentage: 80
           spike_limit_percentage: 25
       exporters:
-        debug:
         otlphttp/k8s_logs:
           endpoint: https://logscale-ingest.partition.ref.logsr.life/api/v1/ingest/otlp
           headers:

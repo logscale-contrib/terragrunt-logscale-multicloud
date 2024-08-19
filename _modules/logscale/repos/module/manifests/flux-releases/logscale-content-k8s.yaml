@@ -55,14 +55,14 @@ spec:
           managedClusterName: ${cluster_name}
           name: "otel-humio"
           parserScript: |
-            parseJson()
+            parseJson(excludeEmpty=true,handleNull=discard)
             | case {
               scopeLog.logRecord.attributes.k8s.resource.name="events"
               | %type:=events
               | parseTimestamp(field="scopeLog.logRecord.observedTimeUnix.millis",format=millis,addErrors=false)
               ;
               *
-                | parseTimestamp(field="scopeLog.logRecord.attributes.time")
+                | parseTimestamp(field="scopeLog.logRecord.attributes.time",addErrors=false)
                 | case {
                   scopeLog.logRecord.body=* AND scopeLog.logRecord.body=/^{.*}$/
                     | parseJson(field=scopeLog.logRecord.body,prefix="scopeLog.logRecord.body.",handleNull=discard)
@@ -91,7 +91,7 @@ spec:
                 ])
                 | drop(fields=[scopeLog.logRecord.body,"scopeLog.logRecord.body.@timestamp"])
                 | %type :="humio"
-                | kvParse(excludeEmpty=true,)
+                | kvParse(excludeEmpty=true)
                 ;
               "resource.attributes.app.kubernetes.io/managed-by"="Helm" AND "resource.attributes.app.kubernetes.io/name"="humio-operator"
                 | %type :="humio-operator"

@@ -4,7 +4,7 @@ data "kubectl_path_documents" "flux2-releases" {
   vars = {
     namespace         = var.namespace
     cluster_name      = var.cluster_name
-    allowDataDeletion = false
+    allowDataDeletion = true
   }
 }
 
