@@ -36,10 +36,10 @@ spec:
     command:
       name: "otelcol-k8s"
     extraEnvs:
-      - name: K8S_NODE_NAME
-        valueFrom:
-          fieldRef:
-            fieldPath: spec.nodeName
+      # - name: K8S_NODE_NAME
+      #   valueFrom:
+      #     fieldRef:
+      #       fieldPath: spec.nodeName
       - name: HUMIO_TOKEN_K8S_LOGS
         valueFrom:
           secretKeyRef:
