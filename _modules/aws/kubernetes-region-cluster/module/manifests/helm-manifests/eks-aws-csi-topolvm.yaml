@@ -289,7 +289,7 @@ spec:
           # Supported filesystems are: ext4, xfs, and btrfs.
           fsType: ext4
           # reclaimPolicy
-          reclaimPolicy: Retain
+          reclaimPolicy: Delete
           # Additional annotations
           annotations: {}
           # Default storage class for dynamic volume provisioning
