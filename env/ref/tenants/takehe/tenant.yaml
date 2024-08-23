@@ -1,0 +1,7 @@
+name: takehe
+platform: aws
+region: us-west-2
+logscale:
+  root: chris.bergman@crowdstrike.com
+  kafka:
+    prefixIncrement: 4
