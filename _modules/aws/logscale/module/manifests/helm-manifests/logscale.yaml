@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: logscale
-      version: 7.0.0-next.154
+      version: 7.0.0-next.156
       sourceRef:
         kind: HelmRepository
         name: logscale-contrib-ls
@@ -293,6 +293,6 @@ spec:
                       - logscale-http-only
     otel:
       components:
-        inject: true
+        inject: false
         debug: false
         otlpURI: http://otel-node-opentelemetry-collector.otel-system.svc.cluster.local:4317
