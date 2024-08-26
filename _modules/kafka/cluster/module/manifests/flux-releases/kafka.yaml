@@ -78,23 +78,23 @@ spec:
           volumes:
             - id: 0
               type: persistent-claim
-              size: 100Gi
+              size: 1Ti
               deleteClaim: false
               class: cluster-block-base-ext4
               kraftMetadata: shared
             - id: 1
               type: persistent-claim
-              size: 512Gi
+              size: 1Ti
               deleteClaim: false
               class: cluster-block-base-ext4
             - id: 2
               type: persistent-claim
-              size: 512Gi
+              size: 1Ti
               deleteClaim: false
               class: cluster-block-base-ext4
             - id: 3
               type: persistent-claim
-              size: 512Gi
+              size: 1Ti
               deleteClaim: false
               class: cluster-block-base-ext4
           # type: persistent-claim
@@ -231,7 +231,7 @@ spec:
         transaction.state.log.min.isr: 2
         transaction.state.log.replication.factor: 3
         # For storage where storage is thin provisioned enable
-        log.preallocate: true
+        # log.preallocate: true
         # background threads include replication for very high throughput increase based on available CPU cores and usage default is 10
         background.threads: 20
         # num.io.threads increase based on available CPU cores and usage default is 8
