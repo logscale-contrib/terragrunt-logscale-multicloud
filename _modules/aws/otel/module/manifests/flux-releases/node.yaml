@@ -125,14 +125,247 @@ spec:
             - id: container-parser
               max_log_size: 102400
               type: container
-          retry_on_failure:
-            enabled: true
-          start_at: end
+              on_error: send_quiet
+            - id: body-router
+              type: router
+              routes:
+                - output: body-parser-json
+                  expr: 'body matches "^{.*}$"'
+                  attributes:
+                    log.format: json
+              default: body-end
+            - id: body-parser-json
+              type: json_parser
+              output: body-end
+              on_error: send_quiet
+            - id: body-end
+              type: noop
+            - id: body-move-message
+              type: move
+              from: attributes.message
+              to: body
+              if: 'attributes.message matches "^."'
+              on_error: send_quiet
+            - id: body-move-msg
+              type: move
+              from: attributes.msg
+              to: body
+              if: 'attributes.msg matches "^."'
+              on_error: send_quiet
+            - id: app-router
+              type: router
+              routes:
+                - output: app-logscale
+                  expr: 'attributes.kind matches "^." and attributes.vhost matches "^\\d*"'
+                  attributes:
+                    log.app: logscale
+              default: app-end
+            - id: app-logscale
+              type: noop
+            - id: app-logscale-router
+              type: router
+              routes:
+                - output: app-logscale-activity
+                  expr: 'attributes.kind == "activity"'
+                - output: app-logscale-audit
+                  expr: 'attributes.kind == "audit"'
+                - output: app-logscale-logs
+                  expr: 'attributes.kind == "logs"'
+                - output: app-logscale-nonsensitive
+                  expr: 'attributes.kind == "nonsensitive"'
+                - output: app-logscale-metrics
+                  expr: 'attributes.kind == "metrics"'
+                - output: app-logscale-threaddumps
+                  expr: 'attributes.kind == "threaddumps"'
+                - output: app-logscale-requests
+                  expr: 'attributes.kind == "requests"'
+                  # expr: 'attributes.kind matches "^(logs|||||analytics|frontend)"'
+              #     - output: app-logscale-threaddumps
+              #       expr: 'attributes.kind == "threaddumps" '
+              #     # - output: app-logscale-logs
+              #     #   expr: 'attributes.kind == "logs" '
+              default: app-end
+            - id: app-logscale-threaddumps
+              type: regex_parser
+              parse_from: body
+              regex: '^[^ ]+ [^ ]+ [^ ]+ [^ ]+ (?P<pairs>.*)\n(?P<message>(?:.*\n?)*)'
+              on_error: send_quiet
+            - id: app-logscale-threaddumps-kv
+              type: key_value_parser
+              parse_from: attributes.pairs
+              on_error: send_quiet
+            - id: app-logscale-threaddumps-remove-pairs
+              type: remove
+              field: attributes.pairs
+              on_error: send_quiet
+            - id: app-logscale-threaddumps-move-message
+              type: move
+              from: attributes.message
+              to: body
+              on_error: send_quiet
+              output: app-end
+            - id: app-logscale-metrics
+              type: regex_parser
+              parse_from: body
+              regex: "^[^ ]+ [^ ]+ [^ ]+ [^ ]+ (?P<pairs>(?s).*)"
+              on_error: send_quiet
+            - id: app-logscale-metrics-kv
+              type: key_value_parser
+              parse_from: attributes.pairs
+              pair_delimiter: ","
+              on_error: send_quiet
+            - id: app-logscale-metrics-move-pairs
+              type: move
+              from: attributes.pairs
+              to: body
+              on_error: send_quiet
+              output: app-end
+            - id: app-logscale-nonsensitive
+              type: regex_parser
+              parse_from: body
+              regex: "^[^ ]+ [^ ]+ [^ ]+ [^ ]+ (?P<pairs>(?s).*)"
+              on_error: send_quiet
+            - id: app-logscale-nonsensitive-kv
+              type: key_value_parser
+              parse_from: attributes.pairs
+              on_error: send_quiet
+            - id: app-logscale-nonsensitive-move-pairs
+              type: move
+              from: attributes.pairs
+              to: body
+              on_error: send_quiet
+              output: app-end
+            - id: app-logscale-requests
+              type: regex_parser
+              parse_from: body
+              regex: "^[^ ]+ [^ ]+ [^ ]+ [^ ]+ (?P<pairs>.*)"
+              on_error: send_quiet
+            - id: app-logscale-requests-kv
+              type: key_value_parser
+              parse_from: attributes.pairs
+              pair_delimiter: ","
+              on_error: send_quiet
+            - id: app-logscale-requests-move-pairs
+              type: move
+              from: attributes.pairs
+              to: body
+              on_error: send_quiet
+              output: app-end
+
+            - id: app-logscale-activity
+              type: regex_parser
+              parse_from: body
+              regex: "^[^ ]+ [^ ]+ [^ ]+ [^ ]+ (?P<pairs>.*)"
+              on_error: send_quiet
+            - id: app-logscale-activity-kv
+              type: key_value_parser
+              parse_from: attributes.pairs
+              # pair_delimiter: ","
+              on_error: send_quiet
+            - id: app-logscale-activity-move-pairs
+              type: move
+              from: attributes.pairs
+              to: body
+              on_error: send_quiet
+              output: app-end
+
+            - id: app-logscale-audit
+              type: json_parser
+              output: app-end
+              on_error: send_quiet
+
+            - id: app-logscale-logs
+              type: noop
+            - id: app-logscale-logs-parse-body
+              type: regex_parser
+              parse_from: body
+              regex: "^[^ ]+ \\[[^]]+] +[A-Z]+ +[^ ]+ +\\d+ +[^ ]+ +(?P<body>(?s).*)"
+              on_error: send_quiet
+            - id: app-logscale-logs-move-body
+              type: move
+              from: attributes.body
+              to: body
+              on_error: send_quiet
+            - id: app-logscale-format-router
+              type: router
+              routes:
+                - output: app-end # no values
+                  expr: |
+                    body matches "^[^=]+$"
+                  attributes:
+                    log.bodyType: nokv
+                - output: app-logscale-format-mkv
+                  expr: |
+                    body matches "^(?:(?P<message>[^=]*) )(?P<pairs>(?:[^ =]+=(?:'[^']+'|[^ ])+(?: |$))+)$"
+                  attributes:
+                    log.bodyType: mkv
+                - output: app-logscale-format-kv
+                  expr: |
+                    body matches "^(?P<pairs>(?:[^ =]+=(?:'[^']+'|[^ ])+(?: |$))+)$"
+                  attributes:
+                    log.bodyType: kv
+                - output: app-logscale-format-fmt
+                  expr: |
+                    body matches "[^ =]+=(?:'[^']+'|[^ ]+)"
+                  attributes:
+                    log.bodyType: fmt
+              default: app-end
+            - id: app-logscale-format-mkv
+              type: regex_parser
+              parse_from: body
+              regex: "^(?:(?P<message>[^=]*):? )(?P<pairs>(?:[^ =]+=[^ ]+(?: |$))+)$"
+              on_error: send_quiet
+            - id: app-logscale-format-mkv-parse
+              type: key_value_parser
+              parse_from: attributes.pairs
+              on_error: send_quiet
+            - id: app-logscale-logs-mkv-remove-pairs
+              type: remove
+              field: attributes.pairs
+              on_error: send_quiet
+            - id: app-logscale-logs-mkv-move-message
+              type: move
+              from: attributes.message
+              to: body
+              if: 'attributes.message matches "^."'
+              on_error: send_quiet
+              output: app-end
+
+            - id: app-logscale-format-kv
+              type: regex_parser
+              parse_from: body
+              regex: "^(?P<pairs>(?:[^ =]+=(?:'[^']+'|[^ ])+(?: |$))+)$"
+              on_error: send_quiet
+            - id: app-logscale-format-kv-parse
+              type: key_value_parser
+              parse_from: attributes.pairs
+              on_error: send_quiet
+            - id: app-logscale-logs-kv-remove-pairs
+              type: remove
+              field: attributes.pairs
+              on_error: send_quiet
+              output: app-end
+
+            - id: app-logscale-format-fmt
+              type: noop
+              # type: key_value_parser
+              # parse_from: body
+              # on_error: send_quiet
+              output: app-end
+
+            - id: app-end
+              type: noop
+
+          start_at: beginning
+
       extensions:
         health_check:
           endpoint: "[$${env:MY_POD_IP}]:13133"
       processors:
-        batch: {}
+        batch:
+          send_batch_size: 1000
+          send_batch_max_size: 1500
+          timeout: 5s
         k8sattributes:
           extract:
             metadata:
@@ -218,10 +451,30 @@ spec:
           endpoint: https://logscale-ingest.partition.ref.logsr.life/api/v1/ingest/otlp
           headers:
             Authorization: Bearer $${env:HUMIO_TOKEN_K8S_LOGS}
+          sending_queue:
+            enabled: true
+          write_buffer_size: 2097152
+          retry_on_failure:
+            enabled: true
+            initial_interval: 10s
+            randomization_factor: 0.7
+            multiplier: 1.3
+            max_interval: 60s
+            max_elapsed_time: 10m
         otlphttp/k8s_metrics:
           endpoint: https://logscale-ingest.partition.ref.logsr.life/api/v1/ingest/otlp
           headers:
             Authorization: Bearer $${env:HUMIO_TOKEN_K8S_METRICS}
+          sending_queue:
+            enabled: true
+          write_buffer_size: 2097152
+          retry_on_failure:
+            enabled: true
+            initial_interval: 10s
+            randomization_factor: 0.7
+            multiplier: 1.3
+            max_interval: 60s
+            max_elapsed_time: 10m
       service:
         pipelines:
           logs:

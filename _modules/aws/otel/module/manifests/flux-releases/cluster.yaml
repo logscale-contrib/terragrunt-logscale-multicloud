@@ -33,11 +33,6 @@ spec:
 
     command:
       name: "otelcol-k8s"
-    extraEnvs:
-      - name: K8S_NODE_NAME
-        valueFrom:
-          fieldRef:
-            fieldPath: spec.nodeName
 
     serviceAccount:
       create: true
