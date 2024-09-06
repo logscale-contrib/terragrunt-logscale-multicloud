@@ -30,6 +30,9 @@ locals {
 dependency "bucket" {
   config_path = "${get_terragrunt_dir()}/../../../${local.tenant.platform}/${local.tenant.region}/bucket-logscale/"
 }
+dependency "bg" {
+  config_path = "${get_terragrunt_dir()}/../../../${local.tenant.platform}/blue-green/${local.tenant.dr.blue}--${local.tenant.dr.green}/"
+}
 dependency "kubernetes_cluster" {
   config_path = "${get_terragrunt_dir()}/../../../${local.tenant.platform}/${local.tenant.region}/kubernetes/kubernetes-region-cluster/"
 }
@@ -61,7 +64,9 @@ inputs = {
   additional_kms_owners = local.platform.aws.kms.additional_key_owners
 
 
-  logscale_storage_bucket_id = dependency.bucket.outputs.logscale_storage_bucket_id
+  logscale_current_storage_bucket_id =dependency.bucket.outputs.logscale_storage_bucket_id
+  logscale_storage_bucket_arn_blue = dependency.bg.outputs.bucket_arn_blue
+  logscale_storage_bucket_arn_green = dependency.bg.outputs.bucket_arn_green
   logscale_export_bucket_id  = dependency.bucket.outputs.logscale_export_bucket_id
   logscale_archive_bucket_id = dependency.bucket.outputs.logscale_archive_bucket_id
 

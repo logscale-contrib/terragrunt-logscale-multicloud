@@ -41,7 +41,8 @@ module "iam_iam-policy" {
           "s3:DeleteObject"
         ],
         "Resource" : [
-          "${data.aws_s3_bucket.ls_storage.arn}/${local.namespace}/*",
+          "${var.logscale_storage_bucket_arn_blue}/${local.namespace}/*",
+          "${var.logscale_storage_bucket_arn_green}/${local.namespace}/*",
           "${data.aws_s3_bucket.ls_archive.arn}/${local.namespace}/*",
           "${data.aws_s3_bucket.ls_export.arn}/${local.namespace}/*",
         ]
@@ -53,7 +54,8 @@ module "iam_iam-policy" {
           "s3:ListBucket"
         ],
         "Resource" : [
-          data.aws_s3_bucket.ls_storage.arn,
+          var.logscale_storage_bucket_arn_blue,
+          var.logscale_storage_bucket_arn_green,
           data.aws_s3_bucket.ls_archive.arn,
           data.aws_s3_bucket.ls_export.arn,
         ]
