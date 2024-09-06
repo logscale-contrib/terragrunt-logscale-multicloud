@@ -16,7 +16,15 @@ variable "oidc_provider_arn" {
   description = "(optional) describe your variable"
 }
 
-variable "logscale_storage_bucket_id" {
+variable "logscale_current_storage_bucket_id" {
+  type        = string
+  description = "(optional) describe your variable"
+}
+variable "logscale_storage_bucket_arn_blue" {
+  type        = string
+  description = "(optional) describe your variable"
+}
+variable "logscale_storage_bucket_arn_green" {
   type        = string
   description = "(optional) describe your variable"
 }

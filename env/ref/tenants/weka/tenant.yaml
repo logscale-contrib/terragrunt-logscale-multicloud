@@ -1,7 +1,10 @@
 name: weka
 platform: aws
 region: us-east-1
+dr:
+  blue: us-east-1
+  green: us-west-2
 logscale:
   root: ryan.faircloth@crowdstrike.com
   kafka:
-    prefixIncrement: 4
+    prefixIncrement: 5

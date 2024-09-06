@@ -2,7 +2,7 @@
 module "irsa" {
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.39.1"
+  version = "5.44.0"
 
   role_name_prefix = "${local.namespace}-logscale"
   # role_path        = var.iam_role_path
@@ -22,7 +22,7 @@ module "irsa" {
 
 module "iam_iam-policy" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
-  version = "5.39.1"
+  version = "5.44.0"
 
   name_prefix = "${local.namespace}_${var.service_account}"
   # path        = var.iam_policy_path
@@ -41,7 +41,8 @@ module "iam_iam-policy" {
           "s3:DeleteObject"
         ],
         "Resource" : [
-          "${data.aws_s3_bucket.ls_storage.arn}/${local.namespace}/*",
+          "${var.logscale_storage_bucket_arn_blue}/${local.namespace}/*",
+          "${var.logscale_storage_bucket_arn_green}/${local.namespace}/*",
           "${data.aws_s3_bucket.ls_archive.arn}/${local.namespace}/*",
           "${data.aws_s3_bucket.ls_export.arn}/${local.namespace}/*",
         ]
@@ -53,7 +54,8 @@ module "iam_iam-policy" {
           "s3:ListBucket"
         ],
         "Resource" : [
-          data.aws_s3_bucket.ls_storage.arn,
+          var.logscale_storage_bucket_arn_blue,
+          var.logscale_storage_bucket_arn_green,
           data.aws_s3_bucket.ls_archive.arn,
           data.aws_s3_bucket.ls_export.arn,
         ]
@@ -65,7 +67,7 @@ module "iam_iam-policy" {
 
 module "iam_iam-assume_ingest-base" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
-  version = "5.39.1"
+  version = "5.44.0"
 
   name_prefix = "${local.namespace}_${var.service_account}-assume-ingest-base"
   # path        = var.iam_policy_path

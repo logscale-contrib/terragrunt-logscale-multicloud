@@ -13,7 +13,7 @@ resource "kubectl_manifest" "logscale" {
       kafka_name               = var.kafka_name
       kafka_prefix             = "${format("g%03s", counters_monotonic.kafka_prefix.value)}"
       bucket_prefix            = "${local.namespace}/"
-      bucket_storage           = var.logscale_storage_bucket_id
+      bucket_storage           = var.logscale_current_storage_bucket_id
       bucket_export            = var.logscale_export_bucket_id
       bucket_archive           = var.logscale_archive_bucket_id
       logscale_sa_arn          = module.irsa.iam_role_arn
