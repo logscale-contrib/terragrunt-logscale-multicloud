@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: otel-node
-  namespace: otel-system
+  namespace: kube-system
 spec:
   interval: 10m
   timeout: 5m
@@ -16,7 +16,7 @@ spec:
         namespace: flux-repos
       interval: 5m
   releaseName: otel-node
-  targetNamespace: otel-system
+  targetNamespace: kube-system
   install:
     remediation:
       retries: 3
@@ -66,12 +66,28 @@ spec:
         value: /hostfs/dev
       - name: HOST_ROOT
         value: /hostfs
+    # This also supports template content, which will eventually be converted to yaml.
+    extraVolumes:
+      - name: machineid
+        # mount /data/foo, but only if that directory already exists
+        hostPath:
+          path: /etc/machine-id # directory location on host
+          type: File # this field is optional
+    # This also supports template content, which will eventually be converted to yaml.
+    extraVolumeMounts:
+      - mountPath: /etc/machine-id
+        name: machineid
+        readOnly: true
     serviceAccount:
       create: true
       annotations:
         eks.amazonaws.com/role-arn: arn:aws:iam::042445652404:role/otel-sa20240817134336470800000002
     clusterRole:
       create: true
+      rules:
+        - apiGroups: [""]
+          resources: ["configmaps", "nodes"]
+          verbs: ["get", "watch", "list"]
     rollout:
       rollingUpdate:
         # When 'mode: daemonset', maxSurge cannot be used when hostPort is set for any of the ports

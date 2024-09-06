@@ -295,4 +295,4 @@ spec:
       components:
         inject: false
         debug: false
-        otlpURI: http://otel-node-opentelemetry-collector.otel-system.svc.cluster.local:4317
+        otlpURI: http://otel-node-opentelemetry-collector.kube-system.svc.cluster.local:4317
