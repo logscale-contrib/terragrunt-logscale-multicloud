@@ -1,6 +1,9 @@
 name: scrubfowl
 platform: aws
 region: us-west-2
+dr:
+  blue: us-east-1
+  green: us-west-2
 logscale:
   root: john.vonrader@crowdstrike.com
   kafka:
