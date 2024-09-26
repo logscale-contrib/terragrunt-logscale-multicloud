@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: kafka-strimzi-cluster
-      version: "4.5.1"
+      version: "5.0.2"
       sourceRef:
         kind: HelmRepository
         name: logscale-contrib
@@ -26,9 +26,7 @@ spec:
     enable: false
   values:
     fullnameOverride: ${kafka_name}
-    metadataMode: enabled
     nodePools:
-      enabled: true
       kafka:
         replicas: 4
         resources:
@@ -104,7 +102,6 @@ spec:
           # class: cluster-block-base-ext4
 
       controller:
-        enabled: true
         resources:
           # We usually recommend not to specify default resources and to leave this as a conscious
           # choice for the user. This also increases chances charts run on environments with little
@@ -263,66 +260,3 @@ spec:
               issuerRef:
                 name: cluster-ca-issuer
             # secretName: kafka-tls
-
-      autoscaling:
-        enabled: false
-        minReplicas: 1
-        maxReplicas: 100
-        targetCPUUtilizationPercentage: 80
-        # targetMemoryUtilizationPercentage: 80
-
-    zookeeper:
-      replicas: 3
-      resources:
-        # We usually recommend not to specify default resources and to leave this as a conscious
-        # choice for the user. This also increases chances charts run on environments with little
-        # resources, such as Minikube. If you do want to specify resources, uncomment the following
-        # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-        limits:
-          cpu: 1
-          memory: 2000Mi
-        requests:
-          cpu: 500m
-          memory: 1500Mi
-      storage:
-        type: persistent-claim
-        size: 5Gi
-        deleteClaim: true
-        # Must be SSD or NVME like storage IOPs is the  mary node constraint
-        class: cluster-block-base-ext4
-
-      autoscaling:
-        enabled: false
-        minReplicas: 1
-        maxReplicas: 100
-        targetCPUUtilizationPercentage: 80
-        # targetMemoryUtilizationPercentage: 80
-
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: app.kubernetes.io/name
-                    operator: In
-                    values:
-                      - zookeeper
-              topologyKey: kubernetes.io/hostname
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/os
-                    operator: In
-                    values:
-                      - linux
-
-      topologySpreadConstraints:
-        - maxSkew: 2
-          whenUnsatisfiable: ScheduleAnyway
-          topologyKey: topology.kubernetes.io/zone
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/name: zookeeper
-          matchLabelKeys:
-            - pod-template-hash
