@@ -16,7 +16,7 @@ data "authentik_certificate_key_pair" "generated" {
 
 }
 
-data "authentik_property_mapping_saml" "this" {
+data "authentik_property_mapping_provider_saml" "this" {
   managed_list = [
     "goauthentik.io/providers/saml/email",
     "goauthentik.io/providers/saml/groups",
@@ -26,7 +26,7 @@ data "authentik_property_mapping_saml" "this" {
   ]
 }
 
-data "authentik_property_mapping_saml" "upn" {
+data "authentik_property_mapping_provider_saml" "upn" {
   managed = "goauthentik.io/providers/saml/username"
 }
 
@@ -38,8 +38,8 @@ resource "authentik_provider_saml" "this" {
   signing_kp         = data.authentik_certificate_key_pair.generated.id
 
   audience          = "https://${local.fqdn}/api/v1/saml/metadata"
-  property_mappings = data.authentik_property_mapping_saml.this.ids
-  name_id_mapping   = data.authentik_property_mapping_saml.upn.id
+  property_mappings = data.authentik_property_mapping_provider_saml.this.ids
+  name_id_mapping   = data.authentik_property_mapping_provider_saml.upn.id
 }
 
 data "authentik_provider_saml_metadata" "provider" {
