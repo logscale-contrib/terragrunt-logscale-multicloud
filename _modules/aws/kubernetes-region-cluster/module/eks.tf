@@ -21,14 +21,14 @@ module "eks" {
 
   cluster_addons = {
     eks-pod-identity-agent = {
-      addon_version               = "v1.2.0-eksbuild.1"
+      addon_version               = "v1.3.2-eksbuild.2"
       resolve_conflicts_on_create = "OVERWRITE"
       resolve_conflicts_on_update = "OVERWRITE"
       preserve                    = true
       before_compute              = true
     }
     coredns = {
-      addon_version               = "v1.11.1-eksbuild.6"
+      addon_version               = "v1.11.3-eksbuild.1"
       resolve_conflicts_on_create = "OVERWRITE"
       resolve_conflicts_on_update = "OVERWRITE"
       preserve                    = true
@@ -113,7 +113,7 @@ module "eks" {
     }
     vpc-cni = {
       before_compute           = true
-      addon_version            = "v1.17.1-eksbuild.1"
+      addon_version            = "v1.18.3-eksbuild.3"
       service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
       configuration_values = jsonencode({
         env = {
