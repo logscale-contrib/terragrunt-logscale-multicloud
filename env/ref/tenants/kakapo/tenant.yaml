@@ -7,4 +7,4 @@ dr:
 logscale:
   root: sohil.abdulla@crowdstrike.com
   kafka:
-    prefixIncrement: 3
+    prefixIncrement: 4

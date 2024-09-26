@@ -7,4 +7,4 @@ dr:
 logscale:
   root: brandon.mesa@crowdstrike.com
   kafka:
-    prefixIncrement: 2
+    prefixIncrement: 3

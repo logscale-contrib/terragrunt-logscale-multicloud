@@ -7,4 +7,4 @@ dr:
 logscale:
   root: matt.smith1@crowdstrike.com
   kafka:
-    prefixIncrement: 2
+    prefixIncrement: 3

@@ -7,4 +7,4 @@ dr:
 logscale:
   root: andre.mair@crowdstrike.com
   kafka:
-    prefixIncrement: 2
+    prefixIncrement: 3
