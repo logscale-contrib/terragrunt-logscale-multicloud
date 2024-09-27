@@ -16,7 +16,7 @@ spec:
         namespace: flux-repos
       interval: 5m
   releaseName: karpenter-node-pools
-  targetNamespace: karpenter
+  targetNamespace: kube-system
   install:
     remediation:
       retries: 3
@@ -36,7 +36,7 @@ spec:
   values:
     templates:
       - |
-        apiVersion: karpenter.sh/v1beta1
+        apiVersion: karpenter.sh/v1
         kind: NodePool
         metadata:
           name: general
@@ -48,7 +48,9 @@ spec:
                 storageClass: "network"
             spec:
               nodeClassRef:
-                name: al2-v4
+                group: karpenter.k8s.aws
+                kind: EC2NodeClass
+                name: al2-v5
               requirements:
                 - key: "kubernetes.io/os"
                   operator: In
@@ -74,16 +76,14 @@ spec:
                 - key: efs.csi.aws.com/agent-not-ready
                   value: "true"
                   effect: NoExecute
-              kubelet:
-                podsPerCore: 20
-                maxPods: 100
           limits:
             cpu: 1000
           disruption:
-            consolidationPolicy: WhenUnderutilized
+            consolidationPolicy: WhenEmptyOrUnderutilized
+            consolidateAfter: 30m
           weight: 100
       - |
-        apiVersion: karpenter.sh/v1beta1
+        apiVersion: karpenter.sh/v1
         kind: NodePool
         metadata:
           name: storage
@@ -91,7 +91,9 @@ spec:
           template:
             spec:
               nodeClassRef:
-                name: al2-storage-v4
+                group: karpenter.k8s.aws
+                kind: EC2NodeClass
+                name: al2-storage-v5
               requirements:
                 - key: "kubernetes.io/arch"
                   operator: In
@@ -130,11 +132,9 @@ spec:
                 # - key: topolvm.io/local
                 #   value: "true"
                 #   effect: PreferNoSchedule
-              kubelet:
-                podsPerCore: 20
-                maxPods: 100
           limits:
             cpu: 1000
           disruption:
-            consolidationPolicy: WhenUnderutilized
+            consolidationPolicy: WhenEmptyOrUnderutilized
+            consolidateAfter: 30m
           weight: 20

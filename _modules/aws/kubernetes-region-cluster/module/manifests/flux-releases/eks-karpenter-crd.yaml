@@ -1,0 +1,31 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: karpenter-crd
+  namespace: flux-releases-region
+spec:
+  interval: 10m
+  timeout: 5m
+  chart:
+    spec:
+      chart: karpenter-crd
+      version: "1.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: karpenter
+        namespace: flux-repos
+      interval: 5m
+  releaseName: karpenter-crd
+  targetNamespace: kube-system
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  test:
+    enable: false
+  driftDetection:
+    mode: enabled

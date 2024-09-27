@@ -1,7 +1,7 @@
 
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "20.24.0"
+  version = "20.24.2"
 
   cluster_name      = module.eks.cluster_name
   cluster_ip_family = "ipv6"
@@ -18,6 +18,9 @@ module "karpenter" {
   node_iam_role_additional_policies = {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   }
+
+  irsa_namespace_service_accounts = ["kube-system:karpenter"]
+  enable_v1_permissions           = true
 }
 
 resource "kubectl_manifest" "karpenter" {

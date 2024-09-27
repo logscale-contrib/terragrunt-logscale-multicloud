@@ -16,7 +16,7 @@ spec:
         namespace: flux-repos
       interval: 5m
   releaseName: karpenter-node-classes
-  targetNamespace: karpenter
+  targetNamespace: kube-system
   install:
     remediation:
       retries: 3
@@ -30,12 +30,13 @@ spec:
   values:
     templates:
       - |
-        apiVersion: karpenter.k8s.aws/v1beta1
+        apiVersion: karpenter.k8s.aws/v1
         kind: EC2NodeClass
         metadata:
-          name: al2-v4
+          name: al2-v5
         spec:
-          amiFamily: AL2
+          amiSelectorTerms:
+            - alias: al2@latest
           role: ${node_iam_role_name}
           subnetSelectorTerms: ${jsonencode(subnet_selector)}
           securityGroupSelectorTerms:
@@ -64,12 +65,13 @@ spec:
               sysctl --system
 
       - |
-        apiVersion: karpenter.k8s.aws/v1beta1
+        apiVersion: karpenter.k8s.aws/v1
         kind: EC2NodeClass
         metadata:
-          name: al2-storage-v4
+          name: al2-storage-v5
         spec:
-          amiFamily: AL2
+          amiSelectorTerms:
+            - alias: al2@latest
           role: ${node_iam_role_name}
           subnetSelectorTerms: ${jsonencode(subnet_selector)}
           securityGroupSelectorTerms:
