@@ -33,7 +33,7 @@ spec:
         apiVersion: karpenter.k8s.aws/v1
         kind: EC2NodeClass
         metadata:
-          name: al2-v5
+          name: al2-v6
         spec:
           amiSelectorTerms:
             - alias: al2@latest
@@ -43,6 +43,11 @@ spec:
           - id: ${node_security_group_id}
           tags:
             karpenter.sh/discovery: ${cluster_name}
+          metadataOptions:
+            httpEndpoint: enabled
+            httpProtocolIPv6: disabled
+            httpPutResponseHopLimit: 2
+            httpTokens: required
           userData: |
               # THP Settings
               madvise > /sys/kernel/mm/transparent_hugepage/enabled
@@ -68,7 +73,7 @@ spec:
         apiVersion: karpenter.k8s.aws/v1
         kind: EC2NodeClass
         metadata:
-          name: al2-storage-v5
+          name: al2-storage-v6
         spec:
           amiSelectorTerms:
             - alias: al2@latest
@@ -78,6 +83,11 @@ spec:
           - id: ${node_security_group_id}
           tags:
             karpenter.sh/discovery: ${cluster_name}
+          metadataOptions:
+            httpEndpoint: enabled
+            httpProtocolIPv6: disabled
+            httpPutResponseHopLimit: 2
+            httpTokens: required
           userData: |
               # THP Settings
               madvise > /sys/kernel/mm/transparent_hugepage/enabled

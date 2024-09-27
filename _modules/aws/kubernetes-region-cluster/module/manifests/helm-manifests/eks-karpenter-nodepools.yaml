@@ -50,7 +50,7 @@ spec:
               nodeClassRef:
                 group: karpenter.k8s.aws
                 kind: EC2NodeClass
-                name: al2-v5
+                name: al2-v6
               requirements:
                 - key: "kubernetes.io/os"
                   operator: In
@@ -93,7 +93,7 @@ spec:
               nodeClassRef:
                 group: karpenter.k8s.aws
                 kind: EC2NodeClass
-                name: al2-storage-v5
+                name: al2-storage-v6
               requirements:
                 - key: "kubernetes.io/arch"
                   operator: In
