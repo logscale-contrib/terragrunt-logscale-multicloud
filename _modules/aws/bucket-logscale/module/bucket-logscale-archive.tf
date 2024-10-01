@@ -4,7 +4,7 @@ module "s3_logscale_archive" {
   version = "4.1.2"
 
   bucket_prefix = "${var.partition_name}-logscale-archive"
-  acl           = "private"
+  # acl           = "private"
 
   control_object_ownership = false
   object_ownership         = "BucketOwnerEnforced"

@@ -4,7 +4,7 @@ module "s3_logscale_export" {
   version = "4.1.2"
 
   bucket_prefix = "${var.partition_name}-logscale-export"
-  acl           = "private"
+  # acl           = "private"
 
   control_object_ownership = false
   object_ownership         = "BucketOwnerEnforced"
