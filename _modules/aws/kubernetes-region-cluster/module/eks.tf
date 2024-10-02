@@ -16,6 +16,7 @@ module "eks" {
   cluster_version                = var.cluster_version
   cluster_endpoint_public_access = true
 
+
   # IPV6
   cluster_ip_family = "ipv6"
 
@@ -151,8 +152,10 @@ module "eks" {
       max_size     = 9
       desired_size = 6
 
-      ami_type = "AL2_ARM_64"
-      platform = "linux"
+      ami_type                       = "AL2023_ARM_64_STANDARD"
+      enable_bootstrap_user_data     = true
+      use_latest_ami_release_version = true
+      # platform = "linux"
 
 
       metadata_options = {

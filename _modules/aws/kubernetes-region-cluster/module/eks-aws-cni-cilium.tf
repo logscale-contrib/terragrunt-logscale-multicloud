@@ -28,6 +28,7 @@ cni:
 routingMode: native
 enableIPv4Masquerade: false
 enableIPv6Masquerade: false
+rollOutCiliumPods: true
 endpointRoutes:
   enabled: true
 ipv6:
@@ -41,14 +42,15 @@ k8sServiceHost: ${local.k8shost}
 operator:
   podDisruptionBudget:
     enabled: true
+  extraArgs:
+    - --pod-restart-selector=ciliumDoNotRestart != true
 hubble:
   relay:
     enabled: true
   ui:
     enabled: true
 nodeinit:
-
-  enabled: true
+  enabled: false
   startup:
     preScript: |
       #
@@ -61,4 +63,38 @@ nodeinit:
       #
 YAML
   ]
+}
+
+resource "random_string" "ca" {
+  length  = 8
+  special = false
+}
+
+resource "null_resource" "kubeproxy" {
+  depends_on = [helm_release.cilium]
+  triggers = {
+    // fire any time the cluster is update in a way that changes its endpoint or auth
+    endpoint        = module.eks.cluster_endpoint
+    cluster_version = module.eks.cluster_version
+    cilium          = helm_release.cilium.metadata[0].revision
+  }
+  provisioner "local-exec" {
+    command = <<EOH
+cat >/tmp/${random_string.ca.result}.crt <<EOF
+${base64decode(module.eks.cluster_certificate_authority_data)}
+EOF
+token=$(aws eks get-token --cluster-name ${module.eks.cluster_name} | jq -r '.status.token')
+kubectl \
+  --server="${module.eks.cluster_endpoint}" \
+  --certificate_authority=/tmp/${random_string.ca.result}.crt \
+  --token="$token" \
+  -n kube-system delete ds kube-proxy
+kubectl \
+  --server="${module.eks.cluster_endpoint}" \
+  --certificate_authority=/tmp/${random_string.ca.result}.crt \
+  --token="$token" \
+  -n kube-system delete cmkubectl-c kube-proxy
+rm /tmp/${random_string.ca.result}.crt
+EOH
+  }
 }

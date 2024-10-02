@@ -33,10 +33,10 @@ spec:
         apiVersion: karpenter.k8s.aws/v1
         kind: EC2NodeClass
         metadata:
-          name: al2-v6
+          name: al2003-v1
         spec:
           amiSelectorTerms:
-            - alias: al2@latest
+            - alias: al2023@latest
           role: ${node_iam_role_name}
           subnetSelectorTerms: ${jsonencode(subnet_selector)}
           securityGroupSelectorTerms:
@@ -73,10 +73,10 @@ spec:
         apiVersion: karpenter.k8s.aws/v1
         kind: EC2NodeClass
         metadata:
-          name: al2-storage-v6
+          name: al2003-storage-v1
         spec:
           amiSelectorTerms:
-            - alias: al2@latest
+            - alias: al2023@latest
           role: ${node_iam_role_name}
           subnetSelectorTerms: ${jsonencode(subnet_selector)}
           securityGroupSelectorTerms:

@@ -1,7 +1,6 @@
 resource "helm_release" "flux2" {
   depends_on = [
-    helm_release.cilium
-
+    null_resource.kubeproxy
   ]
   repository       = "https://fluxcd-community.github.io/helm-charts"
   chart            = "flux2"
