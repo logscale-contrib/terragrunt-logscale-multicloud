@@ -3,6 +3,8 @@ az_exclude_names: []
 #   - us-east-1e
 kubernetes:
   version: 1.31
+  componentVersions:
+    cilium: 1.16.2
   access_entries:
     env0:
       kubernetes_groups: []

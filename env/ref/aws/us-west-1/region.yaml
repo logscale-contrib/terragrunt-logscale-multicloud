@@ -1,7 +1,9 @@
 name: us-west-1
 az_exclude_names: []
 kubernetes:
-  version: 1.28
+  version: 1.31
+  componentVersions:
+    cilium: 1.15.7
   access_entries:
     env0:
       kubernetes_groups: []

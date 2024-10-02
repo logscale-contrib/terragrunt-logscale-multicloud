@@ -10,6 +10,10 @@ variable "cluster_version" {
   type        = string
   description = "(optional) describe your variable"
 }
+variable "component_versions" {
+  type        = map(string)
+  description = "(optional) describe your variable"
+}
 variable "vpc_id" {
   type        = string
   description = "(optional) describe your variable"
