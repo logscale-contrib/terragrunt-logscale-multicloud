@@ -62,97 +62,10 @@ module "vpc_vpc-endpoints" {
   endpoints = {
     s3 = {
       service             = "s3"
+      service_type        = "Gateway"
       private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      tags       = { Name = "s3-vpc-endpoint" }
-    },
-    ecs = {
-      service             = "ecs"
-      private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      tags       = { Name = "ecs-vpc-endpoint" }
-    },
-    ecs_telemetry = {
-      create              = false
-      service             = "ecs-telemetry"
-      private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      tags       = { Name = "ecs-tel-vpc-endpoint" }
-    },
-    ecr_api = {
-      service             = "ecr.api"
-      private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      policy     = data.aws_iam_policy_document.generic_endpoint_policy.json
-      tags       = { Name = "ecr-api-vpc-endpoint" }
-    },
-    ecr_dkr = {
-      service             = "ecr.dkr"
-      private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      policy     = data.aws_iam_policy_document.generic_endpoint_policy.json
-      tags       = { Name = "ecr-dkr-vpc-endpoint" }
-    },
-    sns = {
-      service             = "sns"
-      private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      tags       = { Name = "sns-vpc-endpoint" }
-    },
-    sqs = {
-      service             = "sqs"
-      private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      tags       = { Name = "sqs-vpc-endpoint" }
-    },
-    ssm = {
-      service             = "ssm"
-      private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      tags       = { Name = "ssm-vpc-endpoint" }
-    },
-    ssmmessages = {
-      service             = "ssmmessages"
-      private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      tags       = { Name = "ssmmessages-vpc-endpoint" }
-    },
-    ec2 = {
-      service             = "ec2"
-      private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      tags       = { Name = "ec2-vpc-endpoint" }
-    },
-    ec2messages = {
-      service             = "ec2messages"
-      private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      tags       = { Name = "ec2messages-vpc-endpoint" }
-    },
-    kms = {
-      service             = "kms"
-      private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      tags       = { Name = "kms-vpc-endpoint" }
-    },
-    logs = {
-      service             = "logs"
-      private_dns_enabled = true
-      # ip_address_type     = "dualstack"
-      subnet_ids = module.vpc.private_subnets
-      tags       = { Name = "logsfa-vpc-endpoint" }
+      route_table_ids     = module.vpc.private_route_table_ids
+      tags                = { Name = "s3-vpc-endpoint" }
     },
   }
 
@@ -162,7 +75,7 @@ module "vpc_vpc-endpoints" {
 
 data "aws_iam_policy_document" "generic_endpoint_policy" {
   statement {
-    effect    = "Deny"
+    effect    = "Allow"
     actions   = ["*"]
     resources = ["*"]
 
