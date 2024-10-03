@@ -49,6 +49,13 @@ spec:
             httpPutResponseHopLimit: 2
             httpTokens: required
           userData: |
+              MIME-Version: 1.0
+              Content-Type: multipart/mixed; boundary="//"
+
+              --//
+              Content-Type: text/x-shellscript; charset="us-ascii"
+
+              #!/bin/bash
               # THP Settings
               madvise > /sys/kernel/mm/transparent_hugepage/enabled
               echo advise > /sys/kernel/mm/transparent_hugepage/shmem_enabled
@@ -69,6 +76,7 @@ spec:
               echo fs.file-max=unlimited >>/etc/sysctl.d/99-limits.conf
               sysctl --system
 
+              --//
       - |
         apiVersion: karpenter.k8s.aws/v1
         kind: EC2NodeClass
@@ -89,24 +97,33 @@ spec:
             httpPutResponseHopLimit: 2
             httpTokens: required
           userData: |
-              # THP Settings
-              madvise > /sys/kernel/mm/transparent_hugepage/enabled
-              echo advise > /sys/kernel/mm/transparent_hugepage/shmem_enabled
-              echo defer > /sys/kernel/mm/transparent_hugepage/defrag
-              echo 1 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
-              # TCP Tunning
-              # max 9375000000 is 3x 1s transfer on 25Gbs link
-              echo # TCP Tuning for 25GBs >/etc/sysctl.d/10-tcp-socket-buffers.conf
-              echo net.core.rmem_max=134217728 >>/etc/sysctl.d/10-tcp-socket-buffers.conf
-              echo net.ipv4.tcp_rmem="4096 87380 67108864" >>/etc/sysctl.d/10-tcp-socket-buffers.conf
-              echo net.core.wmem_max=134217728 >>/etc/sysctl.d/10-tcp-socket-buffers.conf
-              echo net.ipv4.tcp_wmem="4096 87380 67108864" >>/etc/sysctl.d/10-tcp-socket-buffers.conf
-              echo net.ipv4.tcp_congestion_control=bbr >>/etc/sysctl.d/10-tcp-socket-buffers.conf
-              echo net.core.default_qdisc=fq >>/etc/sysctl.d/10-tcp-socket-buffers.conf
-              echo net.core.optmem_max = 65536 >>/etc/sysctl.d/10-tcp-socket-buffers.conf
-              echo net.core.somaxconn=1024 >>/etc/sysctl.d/10-tcp-socket-buffers.conf
-              echo net.core.netdev_max_backlog=65536 >>/etc/sysctl.d/10-tcp-socket-buffers.conf
-              # Max open files
-              echo fs.file-max=unlimited >>/etc/sysctl.d/99-limits.conf
-              sysctl --system
-              yum install nvme-cli -y
+            MIME-Version: 1.0
+            Content-Type: multipart/mixed; boundary="//"
+
+            --//
+            Content-Type: text/x-shellscript; charset="us-ascii"
+
+            #!/bin/bash
+            # THP Settings
+            madvise > /sys/kernel/mm/transparent_hugepage/enabled
+            echo advise > /sys/kernel/mm/transparent_hugepage/shmem_enabled
+            echo defer > /sys/kernel/mm/transparent_hugepage/defrag
+            echo 1 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
+            # TCP Tunning
+            # max 9375000000 is 3x 1s transfer on 25Gbs link
+            echo # TCP Tuning for 25GBs >/etc/sysctl.d/10-tcp-socket-buffers.conf
+            echo net.core.rmem_max=134217728 >>/etc/sysctl.d/10-tcp-socket-buffers.conf
+            echo net.ipv4.tcp_rmem="4096 87380 67108864" >>/etc/sysctl.d/10-tcp-socket-buffers.conf
+            echo net.core.wmem_max=134217728 >>/etc/sysctl.d/10-tcp-socket-buffers.conf
+            echo net.ipv4.tcp_wmem="4096 87380 67108864" >>/etc/sysctl.d/10-tcp-socket-buffers.conf
+            echo net.ipv4.tcp_congestion_control=bbr >>/etc/sysctl.d/10-tcp-socket-buffers.conf
+            echo net.core.default_qdisc=fq >>/etc/sysctl.d/10-tcp-socket-buffers.conf
+            echo net.core.optmem_max = 65536 >>/etc/sysctl.d/10-tcp-socket-buffers.conf
+            echo net.core.somaxconn=1024 >>/etc/sysctl.d/10-tcp-socket-buffers.conf
+            echo net.core.netdev_max_backlog=65536 >>/etc/sysctl.d/10-tcp-socket-buffers.conf
+            # Max open files
+            echo fs.file-max=unlimited >>/etc/sysctl.d/99-limits.conf
+            sysctl --system
+            dnf install nvme-cli -y
+
+            --//

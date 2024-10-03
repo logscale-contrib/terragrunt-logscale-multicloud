@@ -39,7 +39,7 @@ spec:
         apiVersion: karpenter.sh/v1
         kind: NodePool
         metadata:
-          name: general
+          name: general-v1
         spec:
           template:
             metadata:
@@ -86,9 +86,13 @@ spec:
         apiVersion: karpenter.sh/v1
         kind: NodePool
         metadata:
-          name: storage
+          name: storage-v1
         spec:
           template:
+            metadata:
+              # Labels are arbitrary key-values that are applied to all nodes
+              labels:
+                storageClass: "nvme"
             spec:
               nodeClassRef:
                 group: karpenter.k8s.aws
