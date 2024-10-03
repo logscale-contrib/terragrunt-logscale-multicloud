@@ -43,6 +43,8 @@ spec:
       extraENV:
         - name: HUMIO_JVM_PERFORMANCE_OPTS
           value: -XX:+UseNUMA -XX:+UseTransparentHugePages
+        - name: HUMIO_OPTS
+          value: -Djava.security.manager=allow
         - name: INGEST_FEED_AWS_ROLE_ARN
           value: ${ingest_role_arn}
         - name: HUMIO_MAX_DIRECT_MEMORY_SIZE_MB
