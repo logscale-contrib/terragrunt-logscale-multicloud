@@ -26,8 +26,8 @@ data "authentik_property_mapping_provider_saml" "this" {
   ]
 }
 
-data "authentik_property_mapping_provider_saml" "upn" {
-  managed = "goauthentik.io/providers/saml/username"
+data "authentik_property_mapping_provider_saml" "email" {
+  managed = "goauthentik.io/providers/saml/email"
 }
 
 resource "authentik_provider_saml" "this" {
@@ -39,7 +39,7 @@ resource "authentik_provider_saml" "this" {
 
   audience          = "https://${local.fqdn}/api/v1/saml/metadata"
   property_mappings = data.authentik_property_mapping_provider_saml.this.ids
-  name_id_mapping   = data.authentik_property_mapping_provider_saml.upn.id
+  name_id_mapping   = data.authentik_property_mapping_provider_saml.email.id
 }
 
 data "authentik_provider_saml_metadata" "provider" {
