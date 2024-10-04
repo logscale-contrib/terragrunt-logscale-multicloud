@@ -21,6 +21,7 @@ terraform {
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
   tenant = yamldecode(file(find_in_parent_folders("tenant.yaml")))
+  identity = yamldecode(file(find_in_parent_folders("identity.yaml")))
 
 }
 
@@ -39,4 +40,6 @@ inputs = {
   token      = dependency.authentik.outputs.admin_token
   url        = dependency.authentik.outputs.url
   from_email = "NoReplyIdentityServices@${dependency.partition_zone.outputs.zone_name}"
+
+  users = local.identity.users
 }

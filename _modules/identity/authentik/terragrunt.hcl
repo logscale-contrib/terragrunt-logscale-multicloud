@@ -21,6 +21,7 @@ terraform {
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
   global = yamldecode(file(find_in_parent_folders("global.yaml")))
+  identity = yamldecode(file(find_in_parent_folders("identity.yaml")))
 
 }
 
@@ -42,7 +43,7 @@ dependency "smtp" {
 # ---------------------------------------------------------------------------------------------------------------------
 inputs = {
   domain_name = dependency.partition_zone.outputs.zone_name
-  admin_email = "ryan.faircloth@crowdstrike.com"
+  admin_email = local.identity.adminEmail
 
   smtp_user     = dependency.smtp.outputs.smtp_user
   smtp_password = dependency.smtp.outputs.smtp_password
