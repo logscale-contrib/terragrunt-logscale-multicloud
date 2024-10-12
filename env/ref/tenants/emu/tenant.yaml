@@ -5,6 +5,11 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: mohamad.nabulsi@crowdstrike.com
+  root: mohamad.nabulsi
+  rootUsers:
+    - akadmin
+    - noplaceforkeys
+    - mohamad.nabulsi
+
   kafka:
     prefixIncrement: 3

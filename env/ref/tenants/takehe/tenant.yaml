@@ -5,6 +5,10 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: chris.bergman@crowdstrike.com
+  root: chris.bergman
+  rootUsers:
+    - akadmin
+    - noplaceforkeys
+    - chris.bergman
   kafka:
     prefixIncrement: 5

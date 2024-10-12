@@ -5,6 +5,11 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: andre.mair@crowdstrike.com
+  root: andre.mair
+  rootUsers:
+    - akadmin
+    - noplaceforkeys
+    - andre.mair
+
   kafka:
     prefixIncrement: 4

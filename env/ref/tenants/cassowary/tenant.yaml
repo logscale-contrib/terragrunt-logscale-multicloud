@@ -5,6 +5,11 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: matt.smith1@crowdstrike.com
+  root: matt.smith1
+  rootUsers:
+    - akadmin
+    - noplaceforkeys
+    - matt.smith1
+
   kafka:
     prefixIncrement: 3

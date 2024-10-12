@@ -5,6 +5,11 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: john.vonrader@crowdstrike.com
+  root: john.vonrader
+  rootUsers:
+    - akadmin
+    - noplaceforkeys
+    - john.vonrader
+
   kafka:
     prefixIncrement: 3

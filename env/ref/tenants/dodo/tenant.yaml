@@ -5,6 +5,11 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: nikunj.shah@crowdstrike.com
+  root: nikunj.shah
+  rootUsers:
+    - akadmin
+    - noplaceforkeys
+    - nikunj.shah
+
   kafka:
     prefixIncrement: 3

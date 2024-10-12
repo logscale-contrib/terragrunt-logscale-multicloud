@@ -5,6 +5,9 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: ryan.faircloth@crowdstrike.com
+  root: akadmin
+  rootUsers:
+    - akadmin
+    - noplaceforkeys
   kafka:
     prefixIncrement: 5

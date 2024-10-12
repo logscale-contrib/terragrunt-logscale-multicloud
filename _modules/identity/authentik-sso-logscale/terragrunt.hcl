@@ -46,4 +46,6 @@ inputs = {
   domain_name = dependency.dns_partition.outputs.zone_name
   host_prefix = "partition"
   tenant      = local.tenant.name
+
+  rootUsers = local.tenant.logscale.rootUsers
 }

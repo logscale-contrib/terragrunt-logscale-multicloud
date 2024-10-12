@@ -22,7 +22,8 @@ data "authentik_property_mapping_provider_saml" "this" {
     "goauthentik.io/providers/saml/groups",
     "goauthentik.io/providers/saml/name",
     "goauthentik.io/providers/saml/uid",
-    "goauthentik.io/providers/saml/upn"
+    "goauthentik.io/providers/saml/upn",
+    "goauthentik.io/providers/saml/username"
   ]
 }
 

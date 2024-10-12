@@ -20,3 +20,8 @@ variable "app_name" {
   type        = string
   description = "(optional) describe your variable"
 }
+
+variable "rootUsers" {
+  type        = list(string)
+  description = "(optional) describe your variable"
+}

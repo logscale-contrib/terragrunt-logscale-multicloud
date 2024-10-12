@@ -8,3 +8,10 @@ kafka:
   deployment: tenant
   kafka:
     prefixIncrement: 1
+logscale:
+  root: ryan.faircloth
+  rootUsers:
+    - akadmin
+    - noplaceforkeys
+  kafka:
+    prefixIncrement: 5

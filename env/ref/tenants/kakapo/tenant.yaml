@@ -5,6 +5,11 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: sohil.abdulla@crowdstrike.com
+  root: sohil.abdulla
+  rootUsers:
+    - akadmin
+    - noplaceforkeys
+    - sohil.abdulla
+
   kafka:
     prefixIncrement: 4

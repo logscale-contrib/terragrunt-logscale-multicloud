@@ -1,26 +1,33 @@
+---
 adminEmail: ryan.faircloth@crowdstrike.com
 users:
-  matt.smith1:
-    name: Matt Smith
-    email: matt.smith1@crowdstrike.com
-  nikunj.shah:
-    name: Nikunj Shah
-    email: nikunj.shah@crowdstrike.com
-  mohamad.nabulsi:
-    name: Mohamad Nabulsi
-    email: mohamad.nabulsi@crowdstrike.com
-  john.vonrader:
-    name: John Von Rader
-    email: john.vonrader@crowdstrike.com
-  brandon.mesa:
-    name: Brandon Mesa
-    email: brandon.mesa@crowdstrike.com
   andre.mair:
-    name: Andre Mair
     email: andre.mair@crowdstrike.com
+    name: Andre Mair
+  brandon.mesa:
+    email: brandon.mesa@crowdstrike.com
+    name: Brandon Mesa
+  chris.bergman:
+    email: chris.bergman@crowdstrike.com
+    name: Chris Bergman
+  john.vonrader:
+    email: john.vonrader@crowdstrike.com
+    name: John Von Rader
+  matt.smith1:
+    email: matt.smith1@crowdstrike.com
+    name: Matt Smith
+  mohamad.nabulsi:
+    email: mohamad.nabulsi@crowdstrike.com
+    name: Mohamad Nabulsi
+  nicholas.bellante:
+    email: nicholas.bellante@crowdstrike.com
+    name: Nicholas Bellante
+  nikunj.shah:
+    email: nikunj.shah@crowdstrike.com
+    name: Nikunj Shah
   noplaceforkeys:
-    name: Ryan Faircloth
     email: noplaceforkeys@gmail.com
+    name: Ryan Faircloth
   sohil.abdulla:
-    name: Sohil Abdulla
     email: sohil.abdulla@crowdstrike.com
+    name: Sohil Abdulla

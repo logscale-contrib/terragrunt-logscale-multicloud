@@ -5,6 +5,11 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: brandon.mesa@crowdstrike.com
+  root: brandon.mesa
+  rootUsers:
+    - akadmin
+    - noplaceforkeys
+    - brandon.mesa
+
   kafka:
     prefixIncrement: 3
