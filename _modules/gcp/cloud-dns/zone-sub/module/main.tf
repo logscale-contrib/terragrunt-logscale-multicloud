@@ -1,7 +1,7 @@
 
 module "dns-public-zone" {
   source     = "terraform-google-modules/cloud-dns/google"
-  version    = "5.2.0"
+  version    = "5.3.0"
   project_id = var.project_id
   type       = "public"
   name       = replace("${var.child_domain}.${var.parent_domain}", ".", "-")
