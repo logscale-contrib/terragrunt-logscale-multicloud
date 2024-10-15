@@ -21,7 +21,11 @@ variable "app_name" {
   description = "(optional) describe your variable"
 }
 
-variable "rootUsers" {
+variable "management-cluster" {
+  type        = list(string)
+  description = "(optional) describe your variable"
+}
+variable "management-organization" {
   type        = list(string)
   description = "(optional) describe your variable"
 }

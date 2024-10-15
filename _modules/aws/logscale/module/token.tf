@@ -26,10 +26,10 @@ resource "time_sleep" "dns" {
   create_duration = "1m"
 }
 
-# data "kubernetes_secret" "otel-token" {
-#   depends_on = [time_sleep.dns]
-#   metadata {
-#     name      = "infra-kubernetes-otel"
-#     namespace = local.namespace
-#   }
-# }
+data "kubernetes_secret" "root-token" {
+  depends_on = [time_sleep.dns]
+  metadata {
+    name      = "logscale-admin-token"
+    namespace = local.namespace
+  }
+}

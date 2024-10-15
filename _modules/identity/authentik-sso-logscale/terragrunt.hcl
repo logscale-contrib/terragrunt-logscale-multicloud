@@ -47,5 +47,6 @@ inputs = {
   host_prefix = "partition"
   tenant      = local.tenant.name
 
-  rootUsers = local.tenant.logscale.rootUsers
+  management-cluster = local.tenant.logscale.management-cluster
+  management-organization = local.tenant.logscale.management-organization
 }
