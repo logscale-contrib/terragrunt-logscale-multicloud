@@ -1,7 +1,7 @@
 
 module "sqs_awslogs" {
   source  = "terraform-aws-modules/sqs/aws"
-  version = "4.2.0"
+  version = "4.2.1"
 
   name            = "${var.tenant}-awslogs"
   use_name_prefix = true
@@ -55,7 +55,7 @@ resource "aws_sns_topic_subscription" "aws_logs" {
 
 module "sqs_s3logs" {
   source  = "terraform-aws-modules/sqs/aws"
-  version = "4.2.0"
+  version = "4.2.1"
 
   name            = "${var.tenant}-s3logs"
   use_name_prefix = true
