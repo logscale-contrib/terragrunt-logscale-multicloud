@@ -5,7 +5,7 @@ dr:
   blue: us-east-2
   green: us-west-1
 logscale:
-  root: ryan.faircloth
+  root: akadmin
   rootUsers:
     - akadmin
     - noplaceforkeys
