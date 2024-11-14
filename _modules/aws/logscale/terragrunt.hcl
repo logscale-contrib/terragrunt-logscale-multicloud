@@ -76,6 +76,7 @@ inputs = {
   saml_url                 = dependency.sso.outputs.url
   saml_signing_certificate = dependency.sso.outputs.signing_certificate
   saml_issuer              = dependency.sso.outputs.issuer
+  scim_token               = dependency.sso.outputs.scim_token
 
   LogScaleRoot           = try(local.tenant.logscale.root, "akaadmin")
   kafka_name             = local.kafka_name

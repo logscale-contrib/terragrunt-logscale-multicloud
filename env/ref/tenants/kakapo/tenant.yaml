@@ -5,11 +5,15 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: sohil.abdulla
-  rootUsers:
+  management-cluster:
     - akadmin
-    - noplaceforkeys
+    - sohil.abdulla
+  management-organization:
+    - akadmin
+    - sohil.abdulla
+  users:
+    - akadmin
     - sohil.abdulla
 
   kafka:
-    prefixIncrement: 4
+    prefixIncrement: 5

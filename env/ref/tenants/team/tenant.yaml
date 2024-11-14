@@ -5,9 +5,14 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: ryan.faircloth
-  rootUsers:
+  management-cluster:
+    - akadmin
+    - noplaceforkeys
+  management-organization:
+    - akadmin
+    - noplaceforkeys
+  users:
     - akadmin
     - noplaceforkeys
   kafka:
-    prefixIncrement: 3
+    prefixIncrement: 4

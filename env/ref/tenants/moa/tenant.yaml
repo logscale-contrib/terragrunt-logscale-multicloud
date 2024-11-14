@@ -5,11 +5,15 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: brandon.mesa
-  rootUsers:
+  management-cluster:
     - akadmin
-    - noplaceforkeys
+    - brandon.mesa
+  management-organization:
+    - akadmin
+    - brandon.mesa
+  users:
+    - akadmin
     - brandon.mesa
 
   kafka:
-    prefixIncrement: 3
+    prefixIncrement: 4

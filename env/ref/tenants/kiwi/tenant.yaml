@@ -5,11 +5,14 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: nicholas.bellante
-  rootUsers:
+  management-cluster:
     - akadmin
-    - noplaceforkeys
     - nicholas.bellante
-
+  management-organization:
+    - akadmin
+    - nicholas.bellante
+  users:
+    - akadmin
+    - nicholas.bellante
   kafka:
-    prefixIncrement: 2
+    prefixIncrement: 3
