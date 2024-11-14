@@ -5,11 +5,15 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: mohamad.nabulsi
-  rootUsers:
+  management-cluster:
     - akadmin
-    - noplaceforkeys
+    - mohamad.nabulsi
+  management-organization:
+    - akadmin
+    - mohamad.nabulsi
+  users:
+    - akadmin
     - mohamad.nabulsi
 
   kafka:
-    prefixIncrement: 3
+    prefixIncrement: 4

@@ -5,11 +5,15 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: andre.mair
-  rootUsers:
+  management-cluster:
     - akadmin
-    - noplaceforkeys
+    - andre.mair
+  management-organization:
+    - akadmin
+    - andre.mair
+  users:
+    - akadmin
     - andre.mair
 
   kafka:
-    prefixIncrement: 4
+    prefixIncrement: 5

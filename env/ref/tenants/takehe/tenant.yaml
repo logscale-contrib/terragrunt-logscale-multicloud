@@ -5,10 +5,14 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: chris.bergman
-  rootUsers:
+  management-cluster:
     - akadmin
-    - noplaceforkeys
+    - chris.bergman
+  management-organization:
+    - akadmin
+    - chris.bergman
+  users:
+    - akadmin
     - chris.bergman
   kafka:
-    prefixIncrement: 5
+    prefixIncrement: 6

@@ -5,11 +5,15 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: nikunj.shah
-  rootUsers:
+  management-cluster:
     - akadmin
-    - noplaceforkeys
+    - nikunj.shah
+  management-organization:
+    - akadmin
+    - nikunj.shah
+  users:
+    - akadmin
     - nikunj.shah
 
   kafka:
-    prefixIncrement: 3
+    prefixIncrement: 4

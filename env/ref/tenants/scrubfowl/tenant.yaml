@@ -5,11 +5,15 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: john.vonrader
-  rootUsers:
+  management-cluster:
     - akadmin
-    - noplaceforkeys
+    - john.vonrader
+  management-organization:
+    - akadmin
+    - john.vonrader
+  users:
+    - akadmin
     - john.vonrader
 
   kafka:
-    prefixIncrement: 3
+    prefixIncrement: 4

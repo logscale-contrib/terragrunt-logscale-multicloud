@@ -5,8 +5,13 @@ dr:
   blue: us-east-1
   green: us-west-2
 logscale:
-  root: akadmin
-  rootUsers:
+  management-cluster:
+    - akadmin
+    - noplaceforkeys
+  management-organization:
+    - akadmin
+    - noplaceforkeys
+  users:
     - akadmin
     - noplaceforkeys
   kafka:

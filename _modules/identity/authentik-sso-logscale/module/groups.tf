@@ -9,6 +9,12 @@ data "authentik_user" "management-organization" {
   username = each.key
 }
 
+data "authentik_user" "users" {
+  for_each = toset(var.users)
+  username = each.key
+}
+
+
 resource "authentik_group" "management-cluster" {
   name       = "${var.tenant}-${var.app_name}-management-cluster"
   attributes = "{\"tenant\": \"${var.tenant}\", \"app\": \"${var.app_name}\", \"LogScaleIsRoot\": true}"
@@ -23,4 +29,5 @@ resource "authentik_group" "management-organization" {
 resource "authentik_group" "users" {
   name       = "${var.tenant}-${var.app_name}-users"
   attributes = "{\"tenant\": \"${var.tenant}\", \"app\": \"${var.app_name}\"}"
+  users      = [for u in data.authentik_user.users : u.id]
 }

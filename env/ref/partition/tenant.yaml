@@ -9,8 +9,13 @@ kafka:
   kafka:
     prefixIncrement: 1
 logscale:
-  root: ryan.faircloth
-  rootUsers:
+  management-cluster:
+    - akadmin
+    - noplaceforkeys
+  management-organization:
+    - akadmin
+    - noplaceforkeys
+  users:
     - akadmin
     - noplaceforkeys
   kafka:

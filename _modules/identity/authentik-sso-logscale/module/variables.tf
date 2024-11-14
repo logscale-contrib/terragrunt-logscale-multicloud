@@ -29,3 +29,7 @@ variable "management-organization" {
   type        = list(string)
   description = "(optional) describe your variable"
 }
+variable "users" {
+  type        = list(string)
+  description = "(optional) describe your variable"
+}

@@ -74,6 +74,10 @@ variable "saml_issuer" {
   description = "(optional) describe your variable"
 }
 
+variable "scim_token" {
+  type = string
+}
+
 variable "LogScaleRoot" {
   type        = string
   description = "(optional) describe your variable"

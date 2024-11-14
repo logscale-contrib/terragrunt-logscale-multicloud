@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: logscale
-      version: 7.0.0-next.161
+      version: 7.0.0-next.183
       sourceRef:
         kind: HelmRepository
         name: logscale-contrib-ls
@@ -38,9 +38,12 @@ spec:
     fullnameOverride: logscale
     humio:
       image:
-        tag: 1.158.0
+        tag: 1.161.0
       trustManagerConfigMap: cluster-trust-bundle
       extraENV:
+        - name: ALLOW_KAFKA_RESET_UNTIL_TIMESTAMP_MS
+          # Friday, November 14, 2025 2:09:27 PM
+          value: "1731611367000"
         - name: HUMIO_JVM_PERFORMANCE_OPTS
           value: -XX:+UseNUMA -XX:+UseTransparentHugePages
         - name: HUMIO_OPTS
@@ -300,3 +303,11 @@ spec:
         otlpURI: http://otel-node-opentelemetry-collector.kube-system.svc.cluster.local:4317
     setroot:
       enabled: false
+    scim:
+      enabled: true
+      image:
+        tag: 1.1.6
+      token: ${scim_token}
+      groups:
+        managementOrganization: ${namespace}-management-organization
+        managementCluster: ${namespace}-management-cluster

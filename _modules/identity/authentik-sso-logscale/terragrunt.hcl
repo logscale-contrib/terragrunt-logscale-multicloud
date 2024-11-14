@@ -49,4 +49,6 @@ inputs = {
 
   management-cluster = local.tenant.logscale.management-cluster
   management-organization = local.tenant.logscale.management-organization
+  users = local.tenant.logscale.users
+
 }
