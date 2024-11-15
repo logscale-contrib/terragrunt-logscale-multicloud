@@ -51,6 +51,15 @@ dependency "sso" {
 dependency "bucket-logs" {
   config_path = "${get_terragrunt_dir()}/../../../${local.tenant.platform}/${local.tenant.region}/bucket-logs/"
 }
+
+dependency "smtp" {
+  config_path = "${get_terragrunt_dir()}/../../../${local.tenant.platform}/${local.tenant.region}/ses/"
+}
+
+dependency "smtp_user" {
+  config_path = "${get_terragrunt_dir()}/../logscale-email/"
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # MODULE PARAMETERS
 # These are the variables we have to pass in to use the module. This defines the parameters that are common across all
@@ -85,4 +94,11 @@ inputs = {
 
   regional_logs_bucket_arn = dependency.bucket-logs.outputs.log_s3_bucket_arn
   regional_sns_topic_arn   = dependency.bucket-logs.outputs.log_sns_topic_arn
+
+  smtp_server = dependency.smtp.outputs.smtp_server
+  smtp_port= dependency.smtp.outputs.smtp_port
+  smtp_use_tls= dependency.smtp.outputs.smtp_use_tls
+  smtp_user= dependency.smtp_user.outputs.smtp_user
+  smtp_password =dependency.smtp_user.outputs.smtp_password
+  smtp_sender = "${local.tenant.name}-logscale@${dependency.dns_partition.outputs.zone_name}"
 }

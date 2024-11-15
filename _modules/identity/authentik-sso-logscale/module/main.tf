@@ -31,6 +31,11 @@ data "authentik_property_mapping_provider_saml" "username" {
   managed = "goauthentik.io/providers/saml/username"
 }
 
+data "authentik_flow" "default-provider-invalidation-flow" {
+  slug = "default-provider-invalidation-flow"
+}
+
+
 resource "authentik_provider_saml" "this" {
   name               = "${local.namespace}-saml"
   authorization_flow = data.authentik_flow.default-authorization-flow.id
@@ -41,7 +46,7 @@ resource "authentik_provider_saml" "this" {
   audience          = "https://${local.fqdn}/api/v1/saml/metadata"
   property_mappings = data.authentik_property_mapping_provider_saml.this.ids
   name_id_mapping   = data.authentik_property_mapping_provider_saml.username.id
-
+  invalidation_flow = data.authentik_flow.default-provider-invalidation-flow.id
 }
 
 data "authentik_provider_saml_metadata" "provider" {

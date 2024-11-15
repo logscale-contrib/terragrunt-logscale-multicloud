@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: logscale
-      version: 7.0.0-next.183
+      version: 7.0.0-next.189
       sourceRef:
         kind: HelmRepository
         name: logscale-contrib-ls
@@ -38,7 +38,7 @@ spec:
     fullnameOverride: logscale
     humio:
       image:
-        tag: 1.161.0
+        tag: 1.163.0
       trustManagerConfigMap: cluster-trust-bundle
       extraENV:
         - name: ALLOW_KAFKA_RESET_UNTIL_TIMESTAMP_MS
@@ -108,6 +108,14 @@ spec:
       fqdnInputs: ${fqdn_ingest}
       fqdn: ${fqdn}
       license: ${logscale_license}
+      smtp:
+        enabled: true
+        host: ${smtp_server}
+        port: "${smtp_port}"
+        startTLS: ${smtp_use_tls}
+        username: ${smtp_user}
+        password: ${smtp_password}
+        sender: ${smtp_sender}
       config:
         enableInternalLogger: "true"
       serviceAccount:
@@ -303,6 +311,10 @@ spec:
         otlpURI: http://otel-node-opentelemetry-collector.kube-system.svc.cluster.local:4317
     setroot:
       enabled: false
+    pdfRenderService:
+      replicas: 1
+      config:
+        debug: "true"
     scim:
       enabled: true
       image:

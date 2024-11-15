@@ -18,5 +18,6 @@ logscale:
   users:
     - akadmin
     - noplaceforkeys
+    - matt.smith1
   kafka:
     prefixIncrement: 5

@@ -13,8 +13,3 @@ variable "partition" {
   type        = string
   description = "(optional) describe your variable"
 }
-
-variable "email_user_name_prefix" {
-  type        = string
-  description = "(optional) describe your variable"
-}

@@ -36,6 +36,9 @@ dependency "partition_zone" {
 dependency "smtp" {
   config_path = "${get_terragrunt_dir()}/../../${local.global.provider}/${local.global.region}/ses/"
 }
+dependency "mailuser" {
+  config_path = "${get_terragrunt_dir()}/../identity-email/"
+}
 # ---------------------------------------------------------------------------------------------------------------------
 # MODULE PARAMETERS
 # These are the variables we have to pass in to use the module. This defines the parameters that are common across all
@@ -45,8 +48,8 @@ inputs = {
   domain_name = dependency.partition_zone.outputs.zone_name
   admin_email = local.identity.adminEmail
 
-  smtp_user     = dependency.smtp.outputs.smtp_user
-  smtp_password = dependency.smtp.outputs.smtp_password
+  smtp_user     = dependency.mailuser.outputs.smtp_user
+  smtp_password = dependency.mailuser.outputs.smtp_password
   smtp_server   = dependency.smtp.outputs.smtp_server
   from_email    = "NoReplyIdentityServices@${dependency.partition_zone.outputs.zone_name}"
 

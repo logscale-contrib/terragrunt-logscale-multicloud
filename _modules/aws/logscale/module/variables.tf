@@ -104,3 +104,22 @@ variable "regional_sns_topic_arn" {
   type        = string
   description = "(optional) describe your variable"
 }
+
+variable "smtp_server" {
+
+}
+variable "smtp_port" {
+
+}
+variable "smtp_use_tls" {
+
+}
+variable "smtp_user" {
+
+}
+variable "smtp_password" {
+
+}
+variable "smtp_sender" {
+
+}

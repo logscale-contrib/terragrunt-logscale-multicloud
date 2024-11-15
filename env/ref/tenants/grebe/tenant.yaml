@@ -1,0 +1,19 @@
+name: grebe
+platform: aws
+region: us-west-2
+dr:
+  blue: us-east-1
+  green: us-west-2
+logscale:
+  management-cluster:
+    - akadmin
+    - jimmy.martinez
+  management-organization:
+    - akadmin
+    - jimmy.martinez
+  users:
+    - akadmin
+    - jimmy.martinez
+
+  kafka:
+    prefixIncrement: 1

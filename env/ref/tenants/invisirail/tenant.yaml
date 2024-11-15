@@ -1,0 +1,19 @@
+name: invisirail
+platform: aws
+region: us-west-2
+dr:
+  blue: us-east-1
+  green: us-west-2
+logscale:
+  management-cluster:
+    - akadmin
+    - nikunj.shah
+  management-organization:
+    - akadmin
+    - nikunj.shah
+  users:
+    - akadmin
+    - nikunj.shah
+
+  kafka:
+    prefixIncrement: 4
