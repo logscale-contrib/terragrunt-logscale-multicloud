@@ -1,7 +1,7 @@
 
 module "keda_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.46.0"
+  version = "5.48.0"
 
 
   role_name_prefix = "keda-operator"
