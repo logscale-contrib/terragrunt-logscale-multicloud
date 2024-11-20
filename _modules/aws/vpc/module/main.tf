@@ -1,7 +1,7 @@
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "5.13.0"
+  version = "5.16.0"
 
   name = var.name
   cidr = var.cidr
@@ -45,7 +45,7 @@ module "vpc" {
 
 module "vpc_vpc-endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "5.13.0"
+  version = "5.16.0"
 
   vpc_id = module.vpc.vpc_id
 
