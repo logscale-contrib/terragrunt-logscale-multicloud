@@ -1,0 +1,19 @@
+name: coot
+platform: aws
+region: us-west-2
+dr:
+  blue: us-east-1
+  green: us-west-2
+logscale:
+  management-cluster:
+    - akadmin
+    - sean.ng
+  management-organization:
+    - akadmin
+    - sean.ng
+  users:
+    - akadmin
+    - sean.ng
+
+  kafka:
+    prefixIncrement: 1

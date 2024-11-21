@@ -31,7 +31,7 @@ repos:
         args:
           - --args=-diff
           - --args=-write=true
-        stages: [commit]
+        stages: [pre-commit]
   #     - id: terraform_docs
   #       stages: [commit]
   #     - id: terraform_tflint
