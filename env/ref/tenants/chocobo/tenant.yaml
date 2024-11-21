@@ -7,13 +7,12 @@ dr:
 logscale:
   management-cluster:
     - akadmin
-    - nikunj.shah
+    - sean.smith
   management-organization:
     - akadmin
-    - nikunj.shah
+    - sean.smith
   users:
     - akadmin
-    - nikunj.shah
-
+    - sean.smith
   kafka:
     prefixIncrement: 4
