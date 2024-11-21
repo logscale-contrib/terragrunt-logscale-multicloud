@@ -38,7 +38,7 @@ spec:
     fullnameOverride: logscale
     humio:
       image:
-        tag: 1.163.0
+        tag: 1.164.0
       trustManagerConfigMap: cluster-trust-bundle
       extraENV:
         - name: ALLOW_KAFKA_RESET_UNTIL_TIMESTAMP_MS
@@ -317,8 +317,9 @@ spec:
         debug: "true"
     scim:
       enabled: true
+      replicas: 1
       image:
-        tag: 1.1.6
+        tag: 1.1.7
       token: ${scim_token}
       groups:
         managementOrganization: ${namespace}-management-organization
