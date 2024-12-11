@@ -65,11 +65,29 @@ module "vpc_vpc-endpoints" {
       service_type        = "Gateway"
       private_dns_enabled = true
       route_table_ids     = module.vpc.private_route_table_ids
-      tags                = { Name = "s3-vpc-endpoint" }
+      policy = jsonencode({
+        "Version" : "2012-10-17",
+        "Statement" : [
+          {
+            "Sid" : "Allow-callers-from-specific-account",
+            "Effect" : "Allow",
+            "Principal" : "*",
+            "Action" : "*",
+            "Resource" : "*",
+            "Condition" : {
+              "StringEquals" : {
+                "aws:PrincipalAccount" : data.aws_caller_identity.current.account_id
+              }
+            }
+          }
+        ]
+      })
+      tags = { Name = "s3-vpc-endpoint" }
     },
   }
-
 }
+
+data "aws_caller_identity" "current" {}
 
 
 
