@@ -1,7 +1,7 @@
 
 module "s3_logscale_export" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "4.2.2"
+  version = "4.3.0"
 
   bucket_prefix = "${var.partition_name}-logscale-export"
   # acl           = "private"
