@@ -1,7 +1,7 @@
 
 module "otel_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.52.0"
+  version = "5.52.1"
 
 
   role_name_prefix = "otel-sa"
@@ -22,7 +22,7 @@ module "otel_irsa" {
 
 module "otel-policy" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
-  version = "5.52.0"
+  version = "5.52.1"
 
   name_prefix = "otel"
   # path        = var.iam_policy_path
