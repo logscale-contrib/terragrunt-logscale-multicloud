@@ -39,9 +39,7 @@ generate "provider_aws_eks_helm" {
     variable "provider_aws_eks_cluster_name" {
       type = string
     }
-    variable "GITHUB_PAT" {
-      type = string
-    }
+
 
   data "aws_eks_cluster" "this" {
     name = var.provider_aws_eks_cluster_name
