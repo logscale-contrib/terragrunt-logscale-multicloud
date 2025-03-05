@@ -94,7 +94,7 @@ spec:
         - name: pvinit
           securityContext:
             privileged: true
-          image: ghcr.io/topolvm/topolvm-with-sidecar:0.25
+          image: ghcr.io/topolvm/topolvm-with-sidecar:0.36
           command:
             - nsenter
           args:
