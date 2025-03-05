@@ -5,7 +5,7 @@ terraform {
   required_providers {
     dns-validation = {
       source  = "ryanfaircloth/dns-validation"
-      version = "0.2.1"
+      version = "0.2.3"
     }
     aws = {
       source  = "hashicorp/aws"
