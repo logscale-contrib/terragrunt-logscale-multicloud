@@ -11,7 +11,7 @@
 # deployed version.
 
 terraform {
-  source = "git::https://github.com/Azure/terraform-azurerm-aks.git?ref=9.3.0"
+  source = "git::https://github.com/Azure/terraform-azurerm-aks.git?ref=9.4.1"
 }
 
 
