@@ -29,7 +29,7 @@ module "eks" {
       before_compute              = true
     }
     coredns = {
-      addon_version               = "v1.11.3-eksbuild.1"
+      addon_version               = "v1.11.4-eksbuild.2"
       resolve_conflicts_on_create = "OVERWRITE"
       resolve_conflicts_on_update = "OVERWRITE"
       preserve                    = true
@@ -114,7 +114,7 @@ module "eks" {
     }
     vpc-cni = {
       before_compute           = true
-      addon_version            = "v1.18.3-eksbuild.3"
+      addon_version            = "v1.19.3-eksbuild.1"
       service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
       configuration_values = jsonencode({
         env = {
@@ -169,11 +169,11 @@ module "eks" {
           value  = "true"
           effect = "PREFER_NO_SCHEDULE"
         },
-        {
-          key    = "node.cilium.io/agent-not-ready"
-          value  = "true"
-          effect = "NO_EXECUTE"
-        }
+        # {
+        #   key    = "node.cilium.io/agent-not-ready"
+        #   value  = "true"
+        #   effect = "NO_EXECUTE"
+        # }
       ]
     }
 

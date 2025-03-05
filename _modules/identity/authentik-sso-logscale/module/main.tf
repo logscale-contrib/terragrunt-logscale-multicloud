@@ -10,7 +10,7 @@ data "authentik_flow" "default-authorization-flow" {
 }
 
 data "authentik_certificate_key_pair" "generated" {
-  name              = "authentik Self-signed Certificate"
+  name              = "authentik Self-signed Certificate 2025"
   fetch_certificate = true
   fetch_key         = false
 
